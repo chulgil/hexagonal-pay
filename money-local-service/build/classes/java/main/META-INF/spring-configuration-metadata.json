@@ -1,0 +1,17 @@
+{
+  "groups": [
+    {
+      "name": "banking",
+      "type": "me.chulgil.msa.moneylocal.MoneyLocalConfigurationProperties",
+      "sourceType": "me.chulgil.msa.moneylocal.MoneyLocalConfigurationProperties"
+    }
+  ],
+  "properties": [
+    {
+      "name": "banking.transfer-threshold",
+      "type": "java.lang.Long",
+      "sourceType": "me.chulgil.msa.moneylocal.MoneyLocalConfigurationProperties"
+    }
+  ],
+  "hints": []
+}
