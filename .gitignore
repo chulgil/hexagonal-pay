@@ -174,7 +174,8 @@ spring-test/test-output/
 # Maven artifacts
 pom.xml
 /target/
-/build/
-db/data
+/*/build/
+axon-server-se/*/*
+db/data/*
 
 # End of https://www.toptal.com/developers/gitignore/api/intellij,java
