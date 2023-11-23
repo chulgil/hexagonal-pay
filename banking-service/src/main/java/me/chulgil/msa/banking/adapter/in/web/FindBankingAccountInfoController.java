@@ -20,7 +20,7 @@ class FindBankingAccountInfoController {
 		// name, address, email
 
 		return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).build();
-	}
+	}gi
 
 	@GetMapping(path = "/banking/transfer-money/")
 	ResponseEntity<Object>  findTransferMoneyInfoByMemberId(){
