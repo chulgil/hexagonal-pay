@@ -1,7 +1,8 @@
 package me.chulgil.msa.membership.application.port.in;
 
-public interface RegisterMembershipUseCase {
 
-	void registerMembership(RegisterMembershipCommand command);
-	void registerAxonMembership(RegisterMembershipCommand command);
+import me.chulgil.msa.membership.domain.Membership;
+
+public interface RegisterMembershipUseCase {
+    Membership registerMembership(RegisterMembershipCommand command);
 }

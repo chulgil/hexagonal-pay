@@ -1,7 +1,7 @@
 package me.chulgil.msa.membership.application.port.in;
 
 
-import me.chulgil.msa.common.SelfValidating;
+import common.SelfValidating;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
