@@ -40,7 +40,11 @@ public class RegisterMembershipControllerTest {
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(mapper.writeValueAsString(request))
                 )
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.content().string(mapper.writeValueAsString(expect)));
+               .andExpect(MockMvcResultMatchers.status().isOk())
+               .andExpect(MockMvcResultMatchers.jsonPath("$.name").value("name")) // 이름 필드 검증
+               .andExpect(MockMvcResultMatchers.jsonPath("$.email").value("email")) // 이메일 필드 검증
+               .andExpect(MockMvcResultMatchers.jsonPath("$.address").value("address")) // 주소 필드 검증
+               .andExpect(MockMvcResultMatchers.jsonPath("$.valid").value(true)) // isValid 필드 검증
+               .andExpect(MockMvcResultMatchers.jsonPath("$.corp").value(false)); // isCorp 필드 검증
     }
 }
