@@ -12,4 +12,5 @@ public class RegisterMembershipRequest {
     private String address;
     private String email;
     private boolean isCorp;
+    private boolean isValid;
 }

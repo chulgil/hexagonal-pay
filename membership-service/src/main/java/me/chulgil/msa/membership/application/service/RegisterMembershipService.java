@@ -20,6 +20,8 @@ public class RegisterMembershipService implements RegisterMembershipUseCase {
     private final MembershipMapper membershipMapper;
     @Override
     public Membership registerMembership(RegisterMembershipCommand command) {
+
+        // biz logic -> port, adapter -> DB(external system)
         MembershipJpaEntity jpaEntity = registerMembershipPort.createMembership(
                 new Membership.MembershipName(command.getName()),
                 new Membership.MembershipEmail(command.getEmail()),
