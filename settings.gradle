@@ -2,7 +2,7 @@ rootProject.name = 'hexagonal-pay'
 
 include 'common'
 include 'membership-service'
-//include 'banking-service'
+include 'banking-service'
 //include 'money-service'
 //include 'money-local-service'
 //include 'remittance-service'

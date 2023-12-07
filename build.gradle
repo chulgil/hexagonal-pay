@@ -11,7 +11,7 @@ plugins {
 
 subprojects {
 
-    if (it.name == 'membership-service' || it.name == 'common') {
+    if (it.name == 'membership-service' || it.name == 'common' || it.name == 'banking-service') {
         compileJava {
             sourceCompatibility = 11
             targetCompatibility = 11
