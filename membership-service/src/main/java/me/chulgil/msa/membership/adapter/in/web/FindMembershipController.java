@@ -1,9 +1,9 @@
 package me.chulgil.msa.membership.adapter.in.web;
 
-import me.chulgil.msa.membership.application.port.in.FindMembershipCommand;
 import me.chulgil.msa.membership.application.port.in.FindMembershipUseCase;
+import me.chulgil.msa.membership.application.port.in.FindMembershipCommand;
 import me.chulgil.msa.membership.domain.Membership;
-import common.WebAdapter;
+import me.chulgil.msa.common.WebAdapter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

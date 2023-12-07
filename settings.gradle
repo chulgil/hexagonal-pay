@@ -1,6 +1,6 @@
 rootProject.name = 'hexagonal-pay'
 
-//include 'common'
+include 'common'
 include 'membership-service'
 //include 'banking-service'
 //include 'money-service'

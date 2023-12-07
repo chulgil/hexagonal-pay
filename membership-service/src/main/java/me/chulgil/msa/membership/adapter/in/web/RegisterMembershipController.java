@@ -3,7 +3,7 @@ package me.chulgil.msa.membership.adapter.in.web;
 import me.chulgil.msa.membership.application.port.in.RegisterMembershipCommand;
 import me.chulgil.msa.membership.application.port.in.RegisterMembershipUseCase;
 import me.chulgil.msa.membership.domain.Membership;
-import common.WebAdapter;
+import me.chulgil.msa.common.WebAdapter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

@@ -1,4 +1,4 @@
-package common;
+package me.chulgil.msa.common;
 
 import javax.validation.*;
 import java.util.Set;

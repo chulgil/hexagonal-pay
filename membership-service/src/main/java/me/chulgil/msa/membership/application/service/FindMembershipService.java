@@ -6,7 +6,7 @@ import me.chulgil.msa.membership.application.port.in.FindMembershipCommand;
 import me.chulgil.msa.membership.application.port.in.FindMembershipUseCase;
 import me.chulgil.msa.membership.application.port.out.FindMembershipPort;
 import me.chulgil.msa.membership.domain.Membership;
-import common.UseCase;
+import me.chulgil.msa.common.UseCase;
 import lombok.RequiredArgsConstructor;
 
 import javax.transaction.Transactional;
