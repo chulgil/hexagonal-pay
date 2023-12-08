@@ -83,7 +83,7 @@ services:
       - axonserver-config:/axonserver/config:ro
 
   membership-service:
-    image: hexagonal-pay-membership-service:0.0.1-SNAPSHOT
+    image: hexagonal-pay-membership-service:1.0.1
     networks:
       - hexagonal_network
     ports:
@@ -103,7 +103,7 @@ services:
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
 
   banking-service:
-    image: hexagonal-pay-banking-service:0.0.1-SNAPSHOT
+    image: hexagonal-pay-banking-service:1.0.1
     networks:
       - hexagonal_network
     ports:
@@ -120,107 +120,107 @@ services:
       - SPRING_DATASOURCE_USERNAME=mysqluser
       - SPRING_DATASOURCE_PASSWORD=mysqlpw
       - SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT=org.hibernate.dialect.MySQL5InnoDBDialect
-      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=create-drop
 
-  money-service:
-    image: hexagonal-pay-money-service:0.0.1-SNAPSHOT
-    networks:
-      - hexagonal_network
-    ports:
-      - "8083:8080"
-    depends_on:
-      - axon-server
-      - mysql
-    environment:
-      - AXON_AXONSERVER_SERVERS=axon-server:8124
-      - AXON_SERIALIZER_EVENTS=jackson
-      - AXON_SERIALIZER_MESSAGES=jackson
-      - AXON_SERIALIZER_GENERAL=xstream
-      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/hexagonal_pay?useSSL=false&allowPublicKeyRetrieval=true
-      - SPRING_DATASOURCE_USERNAME=mysqluser
-      - SPRING_DATASOURCE_PASSWORD=mysqlpw
-      - SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT=org.hibernate.dialect.MySQL5InnoDBDialect
-      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+#  money-service:
+#    image: hexagonal-pay-money-service:0.0.1-SNAPSHOT
+#    networks:
+#      - hexagonal_network
+#    ports:
+#      - "8083:8080"
+#    depends_on:
+#      - axon-server
+#      - mysql
+#    environment:
+#      - AXON_AXONSERVER_SERVERS=axon-server:8124
+#      - AXON_SERIALIZER_EVENTS=jackson
+#      - AXON_SERIALIZER_MESSAGES=jackson
+#      - AXON_SERIALIZER_GENERAL=xstream
+#      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/hexagonal_pay?useSSL=false&allowPublicKeyRetrieval=true
+#      - SPRING_DATASOURCE_USERNAME=mysqluser
+#      - SPRING_DATASOURCE_PASSWORD=mysqlpw
+#      - SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT=org.hibernate.dialect.MySQL5InnoDBDialect
+#      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
 
-  money-local-service:
-    image: hexagonal-pay-money-local-service:0.0.1-SNAPSHOT
-    networks:
-      - hexagonal_network
-    ports:
-      - "8084:8080"
-    depends_on:
-      - axon-server
-      - mysql
-    environment:
-      - AXON_AXONSERVER_SERVERS=axon-server:8124
-      - AXON_SERIALIZER_EVENTS=jackson
-      - AXON_SERIALIZER_MESSAGES=jackson
-      - AXON_SERIALIZER_GENERAL=xstream
-      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/hexagonal_pay?useSSL=false&allowPublicKeyRetrieval=true
-      - SPRING_DATASOURCE_USERNAME=mysqluser
-      - SPRING_DATASOURCE_PASSWORD=mysqlpw
-      - SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT=org.hibernate.dialect.MySQL5InnoDBDialect
-      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+#  money-local-service:
+#    image: hexagonal-pay-money-local-service:0.0.1-SNAPSHOT
+#    networks:
+#      - hexagonal_network
+#    ports:
+#      - "8084:8080"
+#    depends_on:
+#      - axon-server
+#      - mysql
+#    environment:
+#      - AXON_AXONSERVER_SERVERS=axon-server:8124
+#      - AXON_SERIALIZER_EVENTS=jackson
+#      - AXON_SERIALIZER_MESSAGES=jackson
+#      - AXON_SERIALIZER_GENERAL=xstream
+#      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/hexagonal_pay?useSSL=false&allowPublicKeyRetrieval=true
+#      - SPRING_DATASOURCE_USERNAME=mysqluser
+#      - SPRING_DATASOURCE_PASSWORD=mysqlpw
+#      - SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT=org.hibernate.dialect.MySQL5InnoDBDialect
+#      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
 
-  remittance-service:
-    image: hexagonal-pay-remittance-service:0.0.1-SNAPSHOT
-    networks:
-      - hexagonal_network
-    ports:
-      - "8085:8080"
-    depends_on:
-      - axon-server
-      - mysql
-    environment:
-      - AXON_AXONSERVER_SERVERS=axon-server:8124
-      - AXON_SERIALIZER_EVENTS=jackson
-      - AXON_SERIALIZER_MESSAGES=jackson
-      - AXON_SERIALIZER_GENERAL=xstream
-      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/hexagonal_pay?useSSL=false&allowPublicKeyRetrieval=true
-      - SPRING_DATASOURCE_USERNAME=mysqluser
-      - SPRING_DATASOURCE_PASSWORD=mysqlpw
-      - SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT=org.hibernate.dialect.MySQL5InnoDBDialect
-      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+#  remittance-service:
+#    image: hexagonal-pay-remittance-service:0.0.1-SNAPSHOT
+#    networks:
+#      - hexagonal_network
+#    ports:
+#      - "8085:8080"
+#    depends_on:
+#      - axon-server
+#      - mysql
+#    environment:
+#      - AXON_AXONSERVER_SERVERS=axon-server:8124
+#      - AXON_SERIALIZER_EVENTS=jackson
+#      - AXON_SERIALIZER_MESSAGES=jackson
+#      - AXON_SERIALIZER_GENERAL=xstream
+#      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/hexagonal_pay?useSSL=false&allowPublicKeyRetrieval=true
+#      - SPRING_DATASOURCE_USERNAME=mysqluser
+#      - SPRING_DATASOURCE_PASSWORD=mysqlpw
+#      - SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT=org.hibernate.dialect.MySQL5InnoDBDialect
+#      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
 
-  payment-service:
-    image: hexagonal-pay-payment-service:0.0.1-SNAPSHOT
-    networks:
-      - hexagonal_network
-    ports:
-      - "8086:8080"
-    depends_on:
-      - axon-server
-      - mysql
-    environment:
-      - AXON_AXONSERVER_SERVERS=axon-server:8124
-      - AXON_SERIALIZER_EVENTS=jackson
-      - AXON_SERIALIZER_MESSAGES=jackson
-      - AXON_SERIALIZER_GENERAL=xstream
-      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/hexagonal_pay?useSSL=false&allowPublicKeyRetrieval=true
-      - SPRING_DATASOURCE_USERNAME=mysqluser
-      - SPRING_DATASOURCE_PASSWORD=mysqlpw
-      - SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT=org.hibernate.dialect.MySQL5InnoDBDialect
-      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+#  payment-service:
+#    image: hexagonal-pay-payment-service:0.0.1-SNAPSHOT
+#    networks:
+#      - hexagonal_network
+#    ports:
+#      - "8086:8080"
+#    depends_on:
+#      - axon-server
+#      - mysql
+#    environment:
+#      - AXON_AXONSERVER_SERVERS=axon-server:8124
+#      - AXON_SERIALIZER_EVENTS=jackson
+#      - AXON_SERIALIZER_MESSAGES=jackson
+#      - AXON_SERIALIZER_GENERAL=xstream
+#      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/hexagonal_pay?useSSL=false&allowPublicKeyRetrieval=true
+#      - SPRING_DATASOURCE_USERNAME=mysqluser
+#      - SPRING_DATASOURCE_PASSWORD=mysqlpw
+#      - SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT=org.hibernate.dialect.MySQL5InnoDBDialect
+#      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
 
-  settlement-service:
-    image: hexagonal-pay-settlement-service:0.0.1-SNAPSHOT
-    networks:
-      - hexagonal_network
-    ports:
-      - "8087:8080"
-    depends_on:
-      - axon-server
-      - mysql
-    environment:
-      - AXON_AXONSERVER_SERVERS=axon-server:8124
-      - AXON_SERIALIZER_EVENTS=jackson
-      - AXON_SERIALIZER_MESSAGES=jackson
-      - AXON_SERIALIZER_GENERAL=xstream
-      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/hexagonal_pay?useSSL=false&allowPublicKeyRetrieval=true
-      - SPRING_DATASOURCE_USERNAME=mysqluser
-      - SPRING_DATASOURCE_PASSWORD=mysqlpw
-      - SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT=org.hibernate.dialect.MySQL5InnoDBDialect
-      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+#  settlement-service:
+#    image: hexagonal-pay-settlement-service:0.0.1-SNAPSHOT
+#    networks:
+#      - hexagonal_network
+#    ports:
+#      - "8087:8080"
+#    depends_on:
+#      - axon-server
+#      - mysql
+#    environment:
+#      - AXON_AXONSERVER_SERVERS=axon-server:8124
+#      - AXON_SERIALIZER_EVENTS=jackson
+#      - AXON_SERIALIZER_MESSAGES=jackson
+#      - AXON_SERIALIZER_GENERAL=xstream
+#      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/hexagonal_pay?useSSL=false&allowPublicKeyRetrieval=true
+#      - SPRING_DATASOURCE_USERNAME=mysqluser
+#      - SPRING_DATASOURCE_PASSWORD=mysqlpw
+#      - SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT=org.hibernate.dialect.MySQL5InnoDBDialect
+#      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
 
 volumes:
   axonserver-data:

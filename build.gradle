@@ -41,3 +41,16 @@ subprojects {
         }
     }
 }
+
+bootRun {
+    enabled = false
+}
+
+bootJar {
+    enabled = false
+}
+
+bootBuildImage{
+    enabled = false
+}
+
