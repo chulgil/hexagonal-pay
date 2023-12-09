@@ -9,7 +9,7 @@
           <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.springframework.boot/spring-boot-configuration-processor/2.5.2/69da26fe0e896d89feb388c425947c34416fde2e/spring-boot-configuration-processor-2.5.2.jar" />
         </processorPath>
         <module name="hexagonal-pay.membership-service.main" />
-        <module name="hexagonal-pay.banking-service.main" />
+        <module name="me.chulgil.msa.banking.hexagonal-pay.banking-service.main" />
         <module name="hexagonal-pay.common.main" />
         <module name="hexagonal-pay.money-service.main" />
       </profile>

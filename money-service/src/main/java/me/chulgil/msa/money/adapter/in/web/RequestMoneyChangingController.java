@@ -3,7 +3,7 @@ package me.chulgil.msa.money.adapter.in.web;
 import lombok.RequiredArgsConstructor;
 import me.chulgil.msa.common.WebAdapter;
 import me.chulgil.msa.money.application.port.in.IncreaseMoneyRequestCommand;
-import me.chulgil.msa.money.application.port.in.IncreaseMoneyRequestUserCase;
+import me.chulgil.msa.money.application.port.in.IncreaseMoneyRequestUseCase;
 import me.chulgil.msa.money.domain.MoneyChangingRequest;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,9 +15,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class RequestMoneyChangingController {
 
-    private final IncreaseMoneyRequestUserCase useCase;
+    private final IncreaseMoneyRequestUseCase increaseUseCase;
 
-    @PostMapping(path = "/banking/account/register")
+    @PostMapping(path = "/money/increase")
     MoneyChangingResultDetail increaseMoneyChangingRequest(@RequestBody IncreaseMoneyChangingRequest request) {
 
         IncreaseMoneyRequestCommand command = IncreaseMoneyRequestCommand.builder()
@@ -25,8 +25,17 @@ public class RequestMoneyChangingController {
             .amount(request.getAmount())
             .build();
 
-        MoneyChangingRequest moneyChangingRequest = useCase.increaseMoneyRequest(command);
-        MoneyChangingResultDetail resultDetail = new MoneyChangingResultDetail();
-        return resultDetail;
+        MoneyChangingRequest moneyChangingRequest = increaseUseCase.increaseMoneyRequest(command);
+        return new MoneyChangingResultDetail(
+            moneyChangingRequest.getMoneyChangingRequestId(),
+            0,
+            0,
+            moneyChangingRequest.getChangingMoneyAmount()
+        );
+    }
+
+    @PostMapping(path = "/money/decrease")
+    MoneyChangingResultDetail decreaseMoneyChangingRequest(@RequestBody DecreaseMoneyChangingRequest request) {
+        return null;
     }
 }

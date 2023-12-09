@@ -17,24 +17,11 @@ public class MoneyChangingRequest {
     private final String targetMembershipId;
 
     // 그 요청이 증액/감액 요청인지
-    private final ChangingType changingType; // enum 0:증액, 1: 감액
-
-    enum ChangingType {
-        INCREASE,
-        DECREASE
-    }
+    private final int changingType; // enum 0:증액, 1: 감액
 
     private final int changingMoneyAmount; // 증액/감액 금액
 
-    private final ChangingMoneyStatus changingMoneyStatus;
-
-    enum ChangingMoneyStatus {
-        REQUESTED, // 요청됨
-        APPROVED, // 승인됨
-        REJECTED, // 거절됨
-        CANCELED, // 취소됨
-        FAILED // 실패됨
-    }
+    private final int changingMoneyStatus; // enum 0:요청, 1: 성공, 2: 실패
 
     private final String uuid;
 
@@ -44,18 +31,23 @@ public class MoneyChangingRequest {
     // Membership
     // 오염이 되면 안되는 클래스. 고객 정보. 핵심 도메인
 
-    public static MoneyChangingRequest generateMoneyChangingRequest(String targetMembershipId,
-                                                                    ChangingType changingType,
-                                                                    int changingMoneyAmount,
-                                                                    ChangingMoneyStatus changingMoneyStatus,
-                                                                    String uuid) {
-        return new MoneyChangingRequest(UUID.randomUUID().toString(),
-            targetMembershipId,
-            changingType,
-            changingMoneyAmount,
-            changingMoneyStatus,
+    public static MoneyChangingRequest generateMoneyChangingRequest(
+        MoneyChangingRequestId moneyChangingRequestId,
+        TargetMembershipId targetMembershipId,
+        MoneyChangingType moneyChangingType,
+        ChangingMoneyAmount changingMoneyAmount,
+        MoneyChangingStatus moneyChangingStatus,
+        String uuid
+    ) {
+        return new MoneyChangingRequest(
+            moneyChangingRequestId.getValue(),
+            targetMembershipId.getValue(),
+            moneyChangingType.getValue(),
+            changingMoneyAmount.getValue(),
+            moneyChangingStatus.getValue(),
             uuid,
-            new Date());
+            new Date()
+        );
     }
 
     @Value
@@ -78,11 +70,11 @@ public class MoneyChangingRequest {
 
     @Value
     public static class MoneyChangingType {
-        public MoneyChangingType(ChangingType value) {
+        public MoneyChangingType(int value) {
             this.value = value;
         }
 
-        ChangingType value;
+        int value;
     }
 
     @Value
@@ -96,17 +88,17 @@ public class MoneyChangingRequest {
 
     @Value
     public static class MoneyChangingStatus {
-        public MoneyChangingStatus(ChangingMoneyStatus value) {
+        public MoneyChangingStatus(int value) {
             this.value = value;
         }
 
-        ChangingMoneyStatus value;
+        int value;
     }
 
     @Value
     public static class Uuid {
-        public Uuid(UUID uuid) {
-            this.value = uuid.toString();
+        public Uuid(String uuid) {
+            this.value = uuid;
         }
 
         String value;
