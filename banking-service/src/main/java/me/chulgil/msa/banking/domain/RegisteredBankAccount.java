@@ -17,7 +17,7 @@ public class RegisteredBankAccount {
     // Membership
     // 오염이 되면 안되는 클래스. 고객 정보. 핵심 도메인
 
-    public static RegisteredBankAccount generateAccount(RegisteredBankAccountId id,
+    public static RegisteredBankAccount generateRegisteredBankAccount(RegisteredBankAccountId id,
                                                         MembershipId membershipId,
                                                         BankName name,
                                                         BankAccountNumber account,

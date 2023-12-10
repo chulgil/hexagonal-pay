@@ -32,7 +32,7 @@ class RegisterBankAccountControllerTest {
             true);
 
         //when
-        RegisteredBankAccount expect = RegisteredBankAccount.generateAccount(
+        RegisteredBankAccount expect = RegisteredBankAccount.generateRegisteredBankAccount(
             new RegisteredBankAccount.RegisteredBankAccountId("1"),
             new RegisteredBankAccount.MembershipId("1"),
             new RegisteredBankAccount.BankName("bankName"),

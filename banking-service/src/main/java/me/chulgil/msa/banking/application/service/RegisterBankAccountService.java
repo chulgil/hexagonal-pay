@@ -37,7 +37,7 @@ public class RegisterBankAccountService implements RegisterBankAccountUseCase {
 
         if(accountInfo.isValid()) {
             // 2. 등록된 계좌라면 등록
-            RegisteredBankAccountJpaEntity account = registerPort.createAccount(
+            RegisteredBankAccountJpaEntity account = registerPort.createRegisteredBankAccount(
                 new RegisteredBankAccount.MembershipId(command.getMembershipId()),
                 new RegisteredBankAccount.BankName(command.getBankName()),
                 new RegisteredBankAccount.BankAccountNumber(command.getBankAccountNumber()),
