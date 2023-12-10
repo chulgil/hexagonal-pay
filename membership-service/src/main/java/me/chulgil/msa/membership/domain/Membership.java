@@ -26,59 +26,59 @@ public class Membership {
             , MembershipIsCorp membershipIsCorp
     ){
         return new Membership(
-                membershipId.membershipId,
-                membershipName.nameValue,
-                membershipEmail.emailValue,
-                membershipAddress.addressValue,
-                membershipIsValid.isValidValue,
-                membershipIsCorp.isCorpValue
+                membershipId.value,
+                membershipName.value,
+                membershipEmail.value,
+                membershipAddress.value,
+                membershipIsValid.value,
+                membershipIsCorp.value
         );
     }
 
     @Value
     public static class MembershipId {
         public MembershipId(String value) {
-            this.membershipId = value;
+            this.value = value;
         }
-        String membershipId ;
+        String value;
     }
 
     @Value
     public static class MembershipName {
         public MembershipName(String value) {
-            this.nameValue = value;
+            this.value = value;
         }
-        String nameValue ;
+        String value;
     }
     @Value
     public static class MembershipEmail {
         public MembershipEmail(String value) {
-            this.emailValue = value;
+            this.value = value;
         }
-        String emailValue;
+        String value;
     }
 
     @Value
     public static class MembershipAddress {
         public MembershipAddress(String value) {
-            this.addressValue = value;
+            this.value = value;
         }
-        String addressValue;
+        String value;
     }
 
     @Value
     public static class MembershipIsValid {
         public MembershipIsValid(boolean value) {
-            this.isValidValue = value;
+            this.value = value;
         }
-        boolean isValidValue;
+        boolean value;
     }
 
     @Value
     public static class MembershipIsCorp {
         public MembershipIsCorp(boolean value) {
-            this.isCorpValue = value;
+            this.value = value;
         }
-        boolean isCorpValue;
+        boolean value;
     }
 }
