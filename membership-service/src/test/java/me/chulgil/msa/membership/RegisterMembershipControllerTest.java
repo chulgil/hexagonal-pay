@@ -25,7 +25,8 @@ public class RegisterMembershipControllerTest {
 
     @Test
     public void testRegisterMembership() throws Exception {
-        RegisterMembershipRequest request = new RegisterMembershipRequest("name", "email", "address", false, true);
+        RegisterMembershipRequest request = RegisterMembershipRequest
+            .builder().name("name").email("email").address("address").isCorp(false).isValid(true).build();
         Membership expect = Membership.generateMember(
             new Membership.MembershipId("auto-generated"),
             new Membership.MembershipName("name"),
