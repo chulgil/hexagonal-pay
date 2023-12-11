@@ -82,6 +82,19 @@ services:
       - axonserver-events:/axonserver/events
       - axonserver-config:/axonserver/config:ro
 
+
+  logging-consumer:
+    image: hexagonal-pay-logging-consumer:1.0.0
+    networks:
+      - hexagonal_network
+    restart: always
+    depends_on:
+      - kafka
+      - zookeeper
+    environment:
+      - KAFKA_CLUSTERS_BOOTSTRAPSERVERS=kafka:29092
+      - LOGGING_TOPIC=hexagonal.logging.out.stdout
+
   membership-service:
     image: hexagonal-pay-membership-service:1.0.1
     networks:
