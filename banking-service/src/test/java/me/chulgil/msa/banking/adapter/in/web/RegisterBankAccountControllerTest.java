@@ -1,6 +1,7 @@
 package me.chulgil.msa.banking.adapter.in.web;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import me.chulgil.msa.banking.BankingApplication;
 import me.chulgil.msa.banking.domain.RegisteredBankAccount;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +12,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-@SpringBootTest
+@SpringBootTest(classes = BankingApplication.class)
 @AutoConfigureMockMvc
 class RegisterBankAccountControllerTest {
 

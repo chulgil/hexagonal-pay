@@ -17,7 +17,7 @@ public class ModifyMembershipController {
 
     private final ModifyMembershipUseCase modifyMembershipUseCase;
     @PostMapping(path = "/membership/modify")
-    Membership registerMembership(@RequestBody ModifyMembershipRequest request) {
+    Membership modifyMembership(@RequestBody ModifyMembershipRequest request) {
 
         ModifyMembershipCommand command = ModifyMembershipCommand.builder()
                 .membershipId(request.getMembershipId())
