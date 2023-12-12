@@ -11,6 +11,7 @@
         </processorPath>
         <module name="hexagonal-pay.logging-consumer.main" />
         <module name="hexagonal-pay.membership-service.main" />
+        <module name="hexagonal-pay.task-consumer.main" />
         <module name="hexagonal-pay.banking-service.main" />
         <module name="hexagonal-pay.common.main" />
         <module name="hexagonal-pay.money-service.main" />

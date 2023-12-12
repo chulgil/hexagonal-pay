@@ -12,7 +12,7 @@ plugins {
 subprojects {
 
     if (it.name == 'membership-service' || it.name == 'common' || it.name == 'banking-service' ||
-        it.name == 'money-service' || it.name == 'logging-consumer') {
+        it.name == 'money-service' || it.name == 'logging-consumer' || it.name == 'task-consumer') {
         compileJava {
             sourceCompatibility = 11
             targetCompatibility = 11
