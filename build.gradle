@@ -39,6 +39,10 @@ subprojects {
             implementation 'org.springframework.kafka:spring-kafka'
         }
 
+        tasks.named('test') {
+            useJUnitPlatform()
+        }
+
         test {
             useJUnitPlatform()
             maxHeapSize = "1024m" //원하는 만큼 변경

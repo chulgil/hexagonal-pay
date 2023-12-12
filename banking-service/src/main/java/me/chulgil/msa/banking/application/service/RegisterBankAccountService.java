@@ -5,6 +5,8 @@ import me.chulgil.msa.banking.adapter.out.external.bank.BankAccount;
 import me.chulgil.msa.banking.adapter.out.external.bank.GetBankAccountRequest;
 import me.chulgil.msa.banking.adapter.out.persistence.RegisteredBankAccountJpaEntity;
 import me.chulgil.msa.banking.adapter.out.persistence.RegisteredBankAccountMapper;
+import me.chulgil.msa.banking.application.port.out.GetMembershipPort;
+import me.chulgil.msa.banking.application.port.out.MembershipStatus;
 import me.chulgil.msa.banking.application.port.out.RequestBankAccountInfoPort;
 import me.chulgil.msa.banking.application.port.in.RegisterBankAccountCommand;
 import me.chulgil.msa.banking.application.port.in.RegisterBankAccountUseCase;
@@ -19,6 +21,7 @@ import javax.transaction.Transactional;
 @Transactional
 public class RegisterBankAccountService implements RegisterBankAccountUseCase {
 
+    private final GetMembershipPort getMembershipPort;
     private final RegisterBankAccountPort registerPort;
     private final RequestBankAccountInfoPort requestPort;
     private final RegisteredBankAccountMapper mapper;
@@ -26,10 +29,12 @@ public class RegisterBankAccountService implements RegisterBankAccountUseCase {
     @Override
     public RegisteredBankAccount registerBankAccount(RegisterBankAccountCommand command) {
 
+
+        // 정상 멤버쉽인지 확인
+        MembershipStatus membershipSatus = getMembershipPort.getMembership(command.getMembershipId());
+
         // 은행 계좌 등록
         // 1. 등록된 계좌인지 확인 : 외부 은행에 등록된 계좌인지 확인
-        // Biz Logic -> External Service
-        // Port -> Adapter -> External Service
         BankAccount accountInfo = requestPort.getBankAccountInfo(GetBankAccountRequest.builder()
             .bankName(command.getBankName())
             .bankAccountNumber(command.getBankAccountNumber())
