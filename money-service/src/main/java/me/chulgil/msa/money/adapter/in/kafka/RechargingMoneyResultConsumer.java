@@ -80,7 +80,7 @@ public class RechargingMoneyResultConsumer {
                             this.countDownLatchManager.setDataForKey(task.getTaskId(), "failed");
                         }
 
-                        Thread.sleep(3000);
+                        Thread.sleep(3000); // TODO : Delete when test is done
 
                         this.countDownLatchManager.getCountDownLatch(task.getTaskId()).countDown();
                     }

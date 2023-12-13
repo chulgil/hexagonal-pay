@@ -162,6 +162,22 @@ services:
       - KAFKA_CLUSTERS_BOOTSTRAPSERVERS=kafka:29092
       - LOGGING_TOPIC=hexagonal.logging.out.stdout
       - TASK_TOPIC=hexagonal.task.topic
+      - TASK_RESULT_TOPIC=hexagonal.task.result.topic
+      - SERVICE_MEMBERSHIP_URL=http://membership-service:8080
+
+  task-consumer:
+    image: hexagonal-pay-task-consumer:1.0.0
+    networks:
+      - hexagonal_network
+    restart: always
+    depends_on:
+      - kafka
+      - zookeeper
+    environment:
+      - KAFKA_CLUSTERS_BOOTSTRAPSERVERS=kafka:29092
+      - LOGGING_TOPIC=hexagonal.logging.out.stdout
+      - TASK_TOPIC=hexagonal.task.topic
+      - TASK_RESULT_TOPIC=hexagonal.task.result.topic
 
 #  money-local-service:
 #    image: hexagonal-pay-money-local-service:0.0.1-SNAPSHOT

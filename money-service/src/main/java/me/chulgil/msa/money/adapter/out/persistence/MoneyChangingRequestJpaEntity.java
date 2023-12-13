@@ -1,6 +1,7 @@
 package me.chulgil.msa.money.adapter.out.persistence;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -31,6 +32,7 @@ public class MoneyChangingRequestJpaEntity {
 
     private String uuid;
 
+    @Builder
     public MoneyChangingRequestJpaEntity(String targetMembershipId,
                                          int moneyChangingType,
                                          int moneyAmount,

@@ -17,7 +17,7 @@ public class TaskProducer implements SendRechargingMoneyTaskPort {
 
     private final String topic;
 
-    public TaskProducer(@Value("${kafka.clusters.bootstrapservers") String bootstrapservers,
+    public TaskProducer(@Value("${kafka.clusters.bootstrapservers}") String bootstrapservers,
                         @Value("${task.topic}") String topic) {
         Properties props = new Properties();
         props.put("bootstrap.servers", bootstrapservers);

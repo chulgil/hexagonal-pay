@@ -1,5 +1,6 @@
 package me.chulgil.msa.money.application.service;
 
+import io.micrometer.core.lang.Nullable;
 import lombok.RequiredArgsConstructor;
 import me.chulgil.msa.common.CountDownLatchManager;
 import me.chulgil.msa.common.RechargingMoneyTask;
@@ -52,24 +53,25 @@ public class IncreaseMoneyRequestService implements IncreaseMoneyRequestUseCase 
         // 5. 펌뱅킹을 수행하고 (고객의 연동된 계좌 -> 패캠페이 법인 계좌) (뱅킹)
 
         // 6-1. 결과가 정상적이라면. 성공으로 MoneyChangingRequest 상태값을 변동 후에 리턴
+
         // 성공 시에 멤버의 MemberMoney 값 증액이 필요
+        return getMoneyChangingRequest(command);
+    }
+
+    @Nullable
+    private MoneyChangingRequest getMoneyChangingRequest(IncreaseMoneyRequestCommand command) {
         MemberMoneyJpaEntity entity = increaseMoneyPort.increaseMemberMoney(
-            new MemberMoney.MembershipId(command.getTargetMembershipId()),
-            command.getAmount()
-        );
+            new MemberMoney.MembershipId(command.getTargetMembershipId()), command.getAmount());
 
-        if(entity != null) {
-            return mapper.mapToDomainEntity(
-                increaseMoneyPort.createMoneyChangingRequest(
-                    new MoneyChangingRequest.TargetMembershipId(command.getTargetMembershipId()),
-                    new MoneyChangingRequest.MoneyChangingType(1),
-                    new MoneyChangingRequest.ChangingMoneyAmount(command.getAmount()),
-                    new MoneyChangingRequest.MoneyChangingStatus(1),
-                    new MoneyChangingRequest.Uuid(UUID.randomUUID().toString())
-                )
-            );
+        if (entity != null) {
+            return mapper.mapToDomainEntity(increaseMoneyPort.createMoneyChangingRequest(
+                new MoneyChangingRequest.TargetMembershipId(command.getTargetMembershipId()),
+                new MoneyChangingRequest.MoneyChangingType(1),
+                new MoneyChangingRequest.ChangingMoneyAmount(command.getAmount()),
+                new MoneyChangingRequest.MoneyChangingStatus(1), new MoneyChangingRequest.Uuid(UUID.randomUUID()
+                                                                                                   .toString())
+            ));
         }
-
 
         // 6-2. 결과가 정상적이 아니라면. 실패로 MoneyChangingRequest 상태값을 변동 후에 리턴
         return null;
@@ -102,7 +104,8 @@ public class IncreaseMoneyRequestService implements IncreaseMoneyRequestUseCase 
         subTasks.add(validBankingAccountTask);
 
         RechargingMoneyTask task = RechargingMoneyTask.builder()
-            .taskId(UUID.randomUUID().toString())
+            .taskId(UUID.randomUUID()
+                        .toString())
             .taskName("RechargingMoneyTask : " + "머니 증액")
             .membershipId(command.getTargetMembershipId())
             .subTasks(subTasks)
@@ -111,46 +114,33 @@ public class IncreaseMoneyRequestService implements IncreaseMoneyRequestUseCase 
             .moneyAmount(command.getAmount())
             .build();
 
-        // 2. Kafka Cluster Product
+        // 2. Kafka Cluster Produce
+        // Task Produce
         sendRechargingMoneyTaskPort.sendRechargingMoneyTask(task);
+        countDownLatchManager.addCountDownLatch(task.getTaskId());
 
-        // 3. Wait
+        // 3. Wait ...
         try {
-            countDownLatchManager.getCountDownLatch(task.getTaskId()).await();
+            // Task 완료 이벤트 올 때까지 기다린다.
+            countDownLatchManager.getCountDownLatch(task.getTaskId())
+                                 .await();
+
+            // 3-1. task-consumer
+            // 4. Task Result Consumer
+            // 받은 응답을 다시, countDownLatchManager 를 통해서 결과 데이터를 가져온다.
+            String result = countDownLatchManager.getDataForKey(task.getTaskId());
+            if (result.equals("success")) {
+                // 5. Consume ok, Logic 제대로 수행됨,, 머니 증액.
+                System.out.println("success for async Money Recharging!!");
+                return getMoneyChangingRequest(command);
+            } else {
+                // 5. Consume fail, Logic
+                return null;
+            }
+
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
 
-        // 3-1. task-consumer
-
-        // 4. Task Result Consumer
-        // 받은 응답을 다시, countDownLatchManager 를 통해서 결과 데이터를 가져온다.
-        String result = countDownLatchManager.getDataForKey(task.getTaskId());
-        if (result.equals("success")) {
-            // 5. Consume ok, Logic
-            MemberMoneyJpaEntity entity = increaseMoneyPort.increaseMemberMoney(
-                new MemberMoney.MembershipId(command.getTargetMembershipId()),
-                command.getAmount()
-            );
-
-            if(entity != null) {
-                return mapper.mapToDomainEntity(
-                    increaseMoneyPort.createMoneyChangingRequest(
-                        new MoneyChangingRequest.TargetMembershipId(command.getTargetMembershipId()),
-                        new MoneyChangingRequest.MoneyChangingType(1),
-                        new MoneyChangingRequest.ChangingMoneyAmount(command.getAmount()),
-                        new MoneyChangingRequest.MoneyChangingStatus(1),
-                        new MoneyChangingRequest.Uuid(UUID.randomUUID().toString())
-                    )
-                );
-            }
-
-        } else {
-            // 5. Consume fail, Logic
-            return null;
-        }
-        // 5. Consume ok, Logic
-
-        return null;
     }
 }
