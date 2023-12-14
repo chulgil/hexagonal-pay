@@ -32,7 +32,6 @@ public class MoneyChangingRequestPersistenceAdapter implements IncreaseMoneyPort
             .timeStamp(new Timestamp(System.currentTimeMillis()))
             .uuid(uuid.getValue())
             .build());
-
     }
 
 
