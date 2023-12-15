@@ -2,6 +2,8 @@ package me.chulgil.msa.money.adapter.in.web;
 
 import lombok.RequiredArgsConstructor;
 import me.chulgil.msa.common.WebAdapter;
+import me.chulgil.msa.money.application.port.in.CreateMemberMoneyCommand;
+import me.chulgil.msa.money.application.port.in.CreateMemberMoneyUseCase;
 import me.chulgil.msa.money.application.port.in.IncreaseMoneyRequestCommand;
 import me.chulgil.msa.money.application.port.in.IncreaseMoneyRequestUseCase;
 import me.chulgil.msa.money.domain.MoneyChangingRequest;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class RequestMoneyChangingController {
 
     private final IncreaseMoneyRequestUseCase increaseUseCase;
+    private final CreateMemberMoneyUseCase createMoneyUseCase;
 
     @PostMapping(path = "/money/increase")
     MoneyChangingResultDetail increaseMoneyChangingRequest(@RequestBody IncreaseMoneyChangingRequest request) {
@@ -55,4 +58,13 @@ public class RequestMoneyChangingController {
     MoneyChangingResultDetail decreaseMoneyChangingRequest(@RequestBody DecreaseMoneyChangingRequest request) {
         return null;
     }
+
+    @PostMapping(path = "/money/create-member-money")
+    void createMemberMoney(@RequestBody CreateMemberMoneyRequest request) {
+        createMoneyUseCase.createMemberMoney(
+            CreateMemberMoneyCommand.builder()
+                .membershipId(request.getMembershipId())
+                .build());
+    }
+
 }

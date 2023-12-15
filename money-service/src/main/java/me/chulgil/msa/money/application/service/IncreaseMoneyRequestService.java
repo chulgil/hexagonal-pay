@@ -8,6 +8,8 @@ import me.chulgil.msa.common.SubTask;
 import me.chulgil.msa.common.UseCase;
 import me.chulgil.msa.money.adapter.out.persistence.MemberMoneyJpaEntity;
 import me.chulgil.msa.money.adapter.out.persistence.MoneyChangingRequestMapper;
+import me.chulgil.msa.money.application.port.in.CreateMemberMoneyCommand;
+import me.chulgil.msa.money.application.port.in.CreateMemberMoneyUseCase;
 import me.chulgil.msa.money.application.port.in.IncreaseMoneyRequestCommand;
 import me.chulgil.msa.money.application.port.in.IncreaseMoneyRequestUseCase;
 import me.chulgil.msa.money.application.port.out.GetMembershipPort;
@@ -24,7 +26,7 @@ import java.util.UUID;
 @UseCase
 @RequiredArgsConstructor
 @Transactional
-public class IncreaseMoneyRequestService implements IncreaseMoneyRequestUseCase {
+public class IncreaseMoneyRequestService implements IncreaseMoneyRequestUseCase, CreateMemberMoneyUseCase {
 
     private final CountDownLatchManager countDownLatchManager;
 
@@ -141,6 +143,11 @@ public class IncreaseMoneyRequestService implements IncreaseMoneyRequestUseCase 
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+
+    }
+
+    @Override
+    public void createMemberMoney(CreateMemberMoneyCommand command) {
 
     }
 }
