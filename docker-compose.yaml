@@ -200,7 +200,7 @@ services:
 #      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
 
   remittance-service:
-    image: hexagonal-pay-remittance-service:0.0.1-SNAPSHOT
+    image: hexagonal-pay-remittance-service:1.0.0
     networks:
       - hexagonal_network
     ports:
