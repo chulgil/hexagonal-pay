@@ -1,34 +1,29 @@
 package me.chulgil.msa.money.adapter.out.persistence;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+@Getter
 @Entity
 @Table(name = "member_money")
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class MemberMoneyJpaEntity {
 
     @Id
     @GeneratedValue
-    private Long memberMoneyId;
+    private Long id;
 
     private Long membershipId;
 
+    @Setter
     private int balance;
 
-    @Builder
-    public MemberMoneyJpaEntity(Long membershipId, int balance) {
-        this.membershipId = membershipId;
-        this.balance = balance;
-    }
+    private String aggregateIdentifier;
 
 }

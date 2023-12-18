@@ -11,5 +11,5 @@ import lombok.NoArgsConstructor;
 @Builder
 public class CreateMemberMoneyRequest {
     // 어떤 고객의 지갑 정보를 만들 것 인지만 필요
-    private String membershipId;
+    private String targetMembershipId;
 }

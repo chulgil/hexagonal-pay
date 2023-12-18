@@ -12,11 +12,11 @@ import org.jetbrains.annotations.NotNull;
 public class CreateMemberMoneyCommand extends SelfValidating<CreateMemberMoneyCommand> {
 
     @NotNull
-    private final String membershipId;
+    private final String targetMemebershipId;
 
     @Builder
-    public CreateMemberMoneyCommand(@NotNull String membershipId) {
-        this.membershipId = membershipId;
+    public CreateMemberMoneyCommand(@NotNull String targetMembershipId) {
+        this.targetMemebershipId = targetMembershipId;
         this.validateSelf();
     }
 

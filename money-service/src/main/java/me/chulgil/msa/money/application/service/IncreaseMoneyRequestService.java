@@ -6,17 +6,18 @@ import me.chulgil.msa.common.CountDownLatchManager;
 import me.chulgil.msa.common.RechargingMoneyTask;
 import me.chulgil.msa.common.SubTask;
 import me.chulgil.msa.common.UseCase;
+import me.chulgil.msa.money.adapter.in.axon.command.CreateMoneyCommand;
+import me.chulgil.msa.money.adapter.in.axon.command.IncreaseMoneyCommand;
 import me.chulgil.msa.money.adapter.out.persistence.MemberMoneyJpaEntity;
 import me.chulgil.msa.money.adapter.out.persistence.MoneyChangingRequestMapper;
-import me.chulgil.msa.money.application.port.in.CreateMemberMoneyCommand;
-import me.chulgil.msa.money.application.port.in.CreateMemberMoneyUseCase;
-import me.chulgil.msa.money.application.port.in.IncreaseMoneyRequestCommand;
-import me.chulgil.msa.money.application.port.in.IncreaseMoneyRequestUseCase;
+import me.chulgil.msa.money.application.port.in.*;
+import me.chulgil.msa.money.application.port.out.CreateMemberMoneyPort;
 import me.chulgil.msa.money.application.port.out.GetMembershipPort;
 import me.chulgil.msa.money.application.port.out.IncreaseMoneyPort;
 import me.chulgil.msa.money.application.port.out.SendRechargingMoneyTaskPort;
 import me.chulgil.msa.money.domain.MemberMoney;
 import me.chulgil.msa.money.domain.MoneyChangingRequest;
+import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
@@ -38,6 +39,11 @@ public class IncreaseMoneyRequestService implements IncreaseMoneyRequestUseCase,
 
     private final MoneyChangingRequestMapper mapper;
 
+    private final CommandGateway commandGateway;
+
+    private final CreateMemberMoneyPort createMemberMoneyPort;
+
+    private final GetMemberMoneyPort getMemberMoneyPort;
 
     @Override
     public MoneyChangingRequest increaseMoneyRequest(IncreaseMoneyRequestCommand command) {
@@ -148,6 +154,45 @@ public class IncreaseMoneyRequestService implements IncreaseMoneyRequestUseCase,
 
     @Override
     public void createMemberMoney(CreateMemberMoneyCommand command) {
-
+        commandGateway.send(CreateMoneyCommand.builder()
+                          .membershipId(command.getTargetMemebershipId())
+                          .build())
+                      .whenComplete((Object result, Throwable throwable) -> {
+                          if (throwable == null) {
+                              System.out.println("Create Money Aggregate ID: " + result.toString());
+                              createMemberMoneyPort.createMemberMoney(
+                                  new MemberMoney.MembershipId(command.getTargetMemebershipId()),
+                                  new MemberMoney.MoneyAggregateIdentifier(result.toString())
+                              );
+                          } else {
+                              throwable.printStackTrace();
+                              System.out.println("error : " + throwable.getMessage());
+                          }
+                      });
     }
+
+    @Override
+    public void increaseMoneyRequestByEvent(IncreaseMoneyRequestCommand command) {
+        MemberMoneyJpaEntity memberMoney = getMemberMoneyPort.getMemberMoney(
+            new MemberMoney.MembershipId(command.getTargetMembershipId()));
+
+        commandGateway.send(IncreaseMoneyCommand.builder()
+                          .membershipId(command.getTargetMembershipId())
+                          .aggregateIdentifier(memberMoney.getAggregateIdentifier())
+                          .amount(command.getAmount())
+                          .build())
+                      .whenComplete((Object result, Throwable throwable) -> {
+                          if (throwable == null) {
+                              System.out.println("Aggregate ID: " + result.toString());
+                              increaseMoneyPort.increaseMemberMoney(
+                                  new MemberMoney.MembershipId(command.getTargetMembershipId()),
+                                  command.getAmount()
+                              );
+                          } else {
+                              throwable.printStackTrace();
+                              System.out.println("error : " + throwable.getMessage());
+                          }
+                      });
+    }
+
 }
