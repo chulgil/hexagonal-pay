@@ -4,4 +4,7 @@ import me.chulgil.msa.banking.domain.FirmbankingRequest;
 
 public interface RequestFirmbankingUseCase {
     FirmbankingRequest requestFirmbanking(RequestFirmbankingCommand command);
+
+    void requestFirmbankingByEvent(RequestFirmbankingCommand command);
+
 }
