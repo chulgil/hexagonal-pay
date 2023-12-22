@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.axonframework.modelling.command.TargetAggregateIdentifier;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -11,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class RequestFirmbankingCommand {
     private String requestFirmbankingId;
-//    @TargetAggregateIdentifier
+    @TargetAggregateIdentifier
     private String aggregateIdentifier;
     private String rechargeRequestId;
     private String membershipId;

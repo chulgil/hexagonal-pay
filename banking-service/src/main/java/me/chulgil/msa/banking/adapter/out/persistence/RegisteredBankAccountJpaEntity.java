@@ -28,14 +28,18 @@ public class RegisteredBankAccountJpaEntity {
 
     private boolean linkStatusIsValid;
 
+    private String aggregateIdentifier;
+
     @Builder
     public RegisteredBankAccountJpaEntity(String membershipId,
                                           String bankName,
                                           String bankAccountNumber,
-                                          boolean linkStatusIsValid) {
+                                          boolean linkStatusIsValid,
+                                          String aggregateIdentifier) {
         this.membershipId = membershipId;
         this.bankName = bankName;
         this.bankAccountNumber = bankAccountNumber;
         this.linkStatusIsValid = linkStatusIsValid;
+        this.aggregateIdentifier = aggregateIdentifier;
     }
 }

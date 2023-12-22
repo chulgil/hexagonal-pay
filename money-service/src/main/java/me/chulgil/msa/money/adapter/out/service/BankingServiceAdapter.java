@@ -19,7 +19,8 @@ public class BankingServiceAdapter implements GetRegisteredBankAccountPort {
         this.bankingServiceUrl = bankingServiceUrl;
     }
 
-    @Override public RegisteredBankAccountAggregateIdentifier getRegisteredBankAccount(String membershipId) {
+    @Override
+    public RegisteredBankAccountAggregateIdentifier getRegisteredBankAccount(String membershipId) {
         String url = String.join("/", bankingServiceUrl, "banking/account", membershipId);
         try {
             String jsonResponse = httpClient.sendGetRequest(url)
@@ -29,12 +30,12 @@ public class BankingServiceAdapter implements GetRegisteredBankAccountPort {
             ObjectMapper mapper = new ObjectMapper();
             RegisteredBankAccount bankAccount = mapper.readValue(jsonResponse, RegisteredBankAccount.class);
             return RegisteredBankAccountAggregateIdentifier.builder()
-                .aggregateIdentifier(bankAccount.getAggregateIdentifier())
-                .registeredBankAccountId(bankAccount.getRegisteredBankAccountId())
-                .membershipId(bankAccount.getMembershipId())
-                .bankName(bankAccount.getBankName())
-                .bankAccountNumber(bankAccount.getBankAccountNumber())
-                .build();
+                    .aggregateIdentifier(bankAccount.getAggregateIdentifier())
+                    .registeredBankAccountId(bankAccount.getRegisteredBankAccountId())
+                    .membershipId(bankAccount.getMembershipId())
+                    .bankName(bankAccount.getBankName())
+                    .bankAccountNumber(bankAccount.getBankAccountNumber())
+                    .build();
 
         } catch (Exception e) {
             throw new RuntimeException(e);

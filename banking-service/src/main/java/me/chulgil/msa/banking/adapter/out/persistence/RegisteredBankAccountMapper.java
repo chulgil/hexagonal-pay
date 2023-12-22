@@ -8,11 +8,12 @@ public class RegisteredBankAccountMapper {
 
     public RegisteredBankAccount mapToDomainEntity(RegisteredBankAccountJpaEntity entity) {
         return RegisteredBankAccount.generateRegisteredBankAccount(
-            new RegisteredBankAccount.RegisteredBankAccountId(entity.getRegisteredBankAccountId() + ""),
-            new RegisteredBankAccount.MembershipId(entity.getMembershipId()),
-            new RegisteredBankAccount.BankName(entity.getBankName()),
-            new RegisteredBankAccount.BankAccountNumber(entity.getBankAccountNumber()),
-            new RegisteredBankAccount.LinkStatusIsValid(entity.isLinkStatusIsValid())
+                new RegisteredBankAccount.RegisteredBankAccountId(entity.getRegisteredBankAccountId() + ""),
+                new RegisteredBankAccount.MembershipId(entity.getMembershipId()),
+                new RegisteredBankAccount.BankName(entity.getBankName()),
+                new RegisteredBankAccount.BankAccountNumber(entity.getBankAccountNumber()),
+                new RegisteredBankAccount.LinkStatusIsValid(entity.isLinkStatusIsValid()),
+                new RegisteredBankAccount.AggregateIdentifier(entity.getAggregateIdentifier())
         );
     }
 }

@@ -14,6 +14,7 @@ public class RegisteredBankAccount {
     private final String bankName; // enum
     private final String bankAccountNumber;
     private final boolean linkedStatusIsValid;  // 상태가 정상 인지
+    private final String aggregateIdentifier;
 
     // Membership
     // 오염이 되면 안되는 클래스. 고객 정보. 핵심 도메인
@@ -22,9 +23,10 @@ public class RegisteredBankAccount {
                                                                       MembershipId membershipId,
                                                                       BankName name,
                                                                       BankAccountNumber account,
-                                                                      LinkStatusIsValid isValid) {
+                                                                      LinkStatusIsValid isValid,
+                                                                      AggregateIdentifier aggregateIdentifier) {
         return new RegisteredBankAccount(id.registeredBankAccountId, membershipId.value, name.value, account.value,
-                isValid.value);
+                isValid.value, aggregateIdentifier.value);
     }
 
     @Value
@@ -75,6 +77,16 @@ public class RegisteredBankAccount {
         }
 
         boolean value;
+    }
+
+    @Value
+    public static class AggregateIdentifier {
+
+        public AggregateIdentifier(String value) {
+            this.value = value;
+        }
+
+        String value;
     }
 
 }

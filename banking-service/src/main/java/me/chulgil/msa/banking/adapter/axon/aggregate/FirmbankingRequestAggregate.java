@@ -1,5 +1,8 @@
 package me.chulgil.msa.banking.adapter.axon.aggregate;
 
+import static org.axonframework.modelling.command.AggregateLifecycle.apply;
+
+import java.util.UUID;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import me.chulgil.msa.banking.adapter.axon.command.CreateFirmbankingRequestCommand;
@@ -10,10 +13,6 @@ import org.axonframework.commandhandling.CommandHandler;
 import org.axonframework.eventsourcing.EventSourcingHandler;
 import org.axonframework.modelling.command.AggregateIdentifier;
 import org.axonframework.spring.stereotype.Aggregate;
-
-import java.util.UUID;
-
-import static org.axonframework.modelling.command.AggregateLifecycle.apply;
 
 @Aggregate()
 @Getter
@@ -34,12 +33,12 @@ public class FirmbankingRequestAggregate {
     public FirmbankingRequestAggregate(CreateFirmbankingRequestCommand command) {
         System.out.println("CreateFirmbankingRequestCommand Handler");
         apply(FirmbankingRequestCreatedEvent.builder()
-            .fromBankName(command.getFromBankName())
-            .fromBankAccountNumber(command.getFromBankAccountNumber())
-            .toBankName(command.getToBankName())
-            .toBankAccountNumber(command.getToBankAccountNumber())
-            .moneyAmount(command.getMoneyAmount())
-            .build());
+                .fromBankName(command.getFromBankName())
+                .fromBankAccountNumber(command.getFromBankAccountNumber())
+                .toBankName(command.getToBankName())
+                .toBankAccountNumber(command.getToBankAccountNumber())
+                .moneyAmount(command.getMoneyAmount())
+                .build());
     }
 
 //    @CommandHandler
@@ -77,8 +76,8 @@ public class FirmbankingRequestAggregate {
         System.out.println("UpdateFirmbankingRequestCommand Handler");
         this.id = command.getAggregateIdentifier();
         apply(FirmbankingRequestUpdateEvent.builder()
-            .firmbankingStatus(command.getFirmbankingStatus())
-            .build());
+                .firmbankingStatus(command.getFirmbankingStatus())
+                .build());
 
         return this.id;
     }
@@ -88,7 +87,7 @@ public class FirmbankingRequestAggregate {
         System.out.println("FirmbankingRequestCreatedEvent Handler");
 
         this.id = UUID.randomUUID()
-            .toString();
+                      .toString();
         this.fromBankName = event.getFromBankName();
         this.fromBankAccountNumber = event.getFromBankAccountNumber();
         this.toBankName = event.getToBankName();

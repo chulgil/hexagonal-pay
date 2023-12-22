@@ -52,7 +52,7 @@ public class RegisteredBankAccountAggregate {
     @CommandHandler
     public void handle(@NotNull CheckRegisteredBankAccountCommand command,
                        RequestBankAccountInfoPort bankAccountInfoPort) {
-        System.out.println("CheckBankAccountCommand Handler");
+        System.out.println("CheckRegisteredBankAccountCommand Handler");
         // command를 통해 이 어그리거트(RegisteredBankAccount)가 정상인지를 확인
 
         BankAccount account = bankAccountInfoPort.getBankAccountInfo(GetBankAccountRequest.builder()

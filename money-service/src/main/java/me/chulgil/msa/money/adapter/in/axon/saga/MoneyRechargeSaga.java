@@ -3,6 +3,8 @@ package me.chulgil.msa.money.adapter.in.axon.saga;
 import java.util.UUID;
 import lombok.NoArgsConstructor;
 import me.chulgil.msa.common.event.CheckRegisteredBankAccountCommand;
+import me.chulgil.msa.common.event.CheckedRegisteredBankAccountEvent;
+import me.chulgil.msa.common.event.RequestFirmbankingCommand;
 import me.chulgil.msa.money.adapter.in.axon.event.RechargingRequestCreatedEvent;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.axonframework.modelling.saga.SagaEventHandler;
@@ -63,5 +65,45 @@ public class MoneyRechargeSaga {
                               System.out.println("CheckRegisteredBankAccountCommand Command success");
                           }
                       });
+    }
+
+    @SagaEventHandler(associationProperty = "checkRegisteredBankAccountId")
+    public void handle(CheckedRegisteredBankAccountEvent event) {
+        System.out.println("CheckedRegisteredBankAccountEvent saga: " + event.toString());
+        boolean status = event.isChecked();
+        if (status) {
+            System.out.println("CheckedRegisteredBankAccountEvent event success");
+        } else {
+            System.out.println("CheckedRegisteredBankAccountEvent event Failed");
+        }
+
+        String requestFirmbankingId = UUID.randomUUID()
+                                          .toString();
+        SagaLifecycle.associateWith("requestFirmbankingId", requestFirmbankingId);
+
+        // 송금 요청
+        // 고객 계좌 -> 법인 계좌
+        commandGateway.send(RequestFirmbankingCommand.builder()
+                              .requestFirmbankingId(requestFirmbankingId)
+                              .requestFirmbankingId(event.getFirmbankingRequestAggregateIdentifier())
+                              .rechargeRequestId(event.getRechargingRequestId())
+                              .membershipId(event.getMembershipId())
+                              .moneyAmount(event.getAmount())
+                              .fromBankName(event.getFromBankName())
+                              .fromBankAccountNumber(event.getFromBankAccountNumber())
+                              .toBankName("cgbank")
+                              .toBankAccountNumber("1234567890")
+                              .build(
+                              ))
+                      .whenComplete(
+                              (result, throwable) -> {
+                                  if (throwable != null) {
+                                      throwable.printStackTrace();
+                                      System.out.println("RequestFirmbankingCommand Command failed");
+                                  } else {
+                                      System.out.println("RequestFirmbankingCommand Command success");
+                                  }
+                              }
+                      );
     }
 }
