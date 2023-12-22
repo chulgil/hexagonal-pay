@@ -1,13 +1,17 @@
 package me.chulgil.msa.banking.adapter.out.persistence;
 
 import lombok.RequiredArgsConstructor;
+import me.chulgil.msa.banking.application.port.in.GetRegisteredBankAccountCommand;
+import me.chulgil.msa.banking.application.port.out.GetRegisteredBankAccountPort;
 import me.chulgil.msa.banking.application.port.out.RegisterBankAccountPort;
 import me.chulgil.msa.banking.domain.RegisteredBankAccount;
 import me.chulgil.msa.common.PersistenceAdapter;
 
+import java.util.List;
+
 @PersistenceAdapter
 @RequiredArgsConstructor
-public class RegisteredBankAccountPersistenceAdapter implements RegisterBankAccountPort {
+public class RegisteredBankAccountPersistenceAdapter implements RegisterBankAccountPort, GetRegisteredBankAccountPort {
 
     private final SpringDataRegisteredBankAccountRepository repository;
 
@@ -22,5 +26,13 @@ public class RegisteredBankAccountPersistenceAdapter implements RegisterBankAcco
             .bankAccountNumber(bankAccountNumber.getValue())
             .linkStatusIsValid(linkStatusIsValid.isValue())
             .build());
+    }
+
+    @Override public RegisteredBankAccountJpaEntity getRegisteredBankAccount(GetRegisteredBankAccountCommand command) {
+        List<RegisteredBankAccountJpaEntity> entity = repository.findByMembershipoId(command.getMembershipId());
+        if (!entity.isEmpty()) {
+            return entity.get(0);
+        }
+        return null;
     }
 }

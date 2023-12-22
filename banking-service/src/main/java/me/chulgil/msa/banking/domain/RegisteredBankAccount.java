@@ -8,6 +8,7 @@ import lombok.Value;
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class RegisteredBankAccount {
+
     private final String registeredBankAccountId;
     private final String membershipId;
     private final String bankName; // enum
@@ -18,19 +19,17 @@ public class RegisteredBankAccount {
     // 오염이 되면 안되는 클래스. 고객 정보. 핵심 도메인
 
     public static RegisteredBankAccount generateRegisteredBankAccount(RegisteredBankAccountId id,
-                                                        MembershipId membershipId,
-                                                        BankName name,
-                                                        BankAccountNumber account,
-                                                        LinkStatusIsValid isValid) {
-        return new RegisteredBankAccount(id.registeredBankAccountId,
-            membershipId.value,
-            name.value,
-            account.value,
-            isValid.value);
+                                                                      MembershipId membershipId,
+                                                                      BankName name,
+                                                                      BankAccountNumber account,
+                                                                      LinkStatusIsValid isValid) {
+        return new RegisteredBankAccount(id.registeredBankAccountId, membershipId.value, name.value, account.value,
+                isValid.value);
     }
 
     @Value
     public static class RegisteredBankAccountId {
+
         public RegisteredBankAccountId(String value) {
             this.registeredBankAccountId = value;
         }
@@ -40,6 +39,7 @@ public class RegisteredBankAccount {
 
     @Value
     public static class MembershipId {
+
         public MembershipId(String value) {
             this.value = value;
         }
@@ -49,6 +49,7 @@ public class RegisteredBankAccount {
 
     @Value
     public static class BankName {
+
         public BankName(String value) {
             this.value = value;
         }
@@ -58,6 +59,7 @@ public class RegisteredBankAccount {
 
     @Value
     public static class BankAccountNumber {
+
         public BankAccountNumber(String value) {
             this.value = value;
         }
@@ -67,6 +69,7 @@ public class RegisteredBankAccount {
 
     @Value
     public static class LinkStatusIsValid {
+
         public LinkStatusIsValid(boolean value) {
             this.value = value;
         }

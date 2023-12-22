@@ -74,7 +74,7 @@ public class RequestMoneyChangingController {
             .amount(request.getAmount())
             .build();
 
-        increaseUseCase.increaseMoneyRequestByEvent(command);
+        increaseUseCase.increaseMoneyRequestByEventWithSaga(command);
     }
 
 }

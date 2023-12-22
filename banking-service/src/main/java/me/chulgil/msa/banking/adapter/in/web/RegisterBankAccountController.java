@@ -16,16 +16,30 @@ import org.springframework.web.bind.annotation.RestController;
 public class RegisterBankAccountController {
 
     private final RegisterBankAccountUseCase useCase;
+
     @PostMapping(path = "/banking/account/register")
     RegisteredBankAccount registeredBankAccount(@RequestBody RegisterBankAccountRequest request) {
 
         RegisterBankAccountCommand command = RegisterBankAccountCommand.builder()
-            .membershipId(request.getMembershipId())
-            .bankName(request.getBankName())
-            .bankAccountNumber(request.getBankAccountNumber())
-            .isValid(request.isValid())
-            .build();
+                .membershipId(request.getMembershipId())
+                .bankName(request.getBankName())
+                .bankAccountNumber(request.getBankAccountNumber())
+                .isValid(request.isValid())
+                .build();
 
         return useCase.registerBankAccount(command);
+    }
+
+    @PostMapping(path = "/banking/account/register-eda")
+    void registeredBankAccountByEvent(@RequestBody RegisterBankAccountRequest request) {
+
+        RegisterBankAccountCommand command = RegisterBankAccountCommand.builder()
+                .membershipId(request.getMembershipId())
+                .bankName(request.getBankName())
+                .bankAccountNumber(request.getBankAccountNumber())
+                .isValid(request.isValid())
+                .build();
+
+        useCase.registerBankAccountByEvent(command);
     }
 }

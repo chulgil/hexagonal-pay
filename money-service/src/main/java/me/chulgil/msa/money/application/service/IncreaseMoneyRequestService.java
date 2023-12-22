@@ -8,6 +8,7 @@ import me.chulgil.msa.common.SubTask;
 import me.chulgil.msa.common.UseCase;
 import me.chulgil.msa.money.adapter.in.axon.command.CreateMoneyCommand;
 import me.chulgil.msa.money.adapter.in.axon.command.IncreaseMoneyCommand;
+import me.chulgil.msa.money.adapter.in.axon.command.RechargingMoneyRequestCreateCommand;
 import me.chulgil.msa.money.adapter.out.persistence.MemberMoneyJpaEntity;
 import me.chulgil.msa.money.adapter.out.persistence.MoneyChangingRequestMapper;
 import me.chulgil.msa.money.application.port.in.*;
@@ -45,8 +46,7 @@ public class IncreaseMoneyRequestService implements IncreaseMoneyRequestUseCase,
 
     private final GetMemberMoneyPort getMemberMoneyPort;
 
-    @Override
-    public MoneyChangingRequest increaseMoneyRequest(IncreaseMoneyRequestCommand command) {
+    @Override public MoneyChangingRequest increaseMoneyRequest(IncreaseMoneyRequestCommand command) {
 
         // 머니의 충전.증액이라는 과정
         // 1. 고객 정보가 정상인지 확인 (멤버)
@@ -66,10 +66,12 @@ public class IncreaseMoneyRequestService implements IncreaseMoneyRequestUseCase,
         return getMoneyChangingRequest(command);
     }
 
-    @Nullable
-    private MoneyChangingRequest getMoneyChangingRequest(IncreaseMoneyRequestCommand command) {
-        MemberMoneyJpaEntity entity = increaseMoneyPort.increaseMemberMoney(
-            new MemberMoney.MembershipId(command.getTargetMembershipId()), command.getAmount());
+    @Nullable private MoneyChangingRequest getMoneyChangingRequest(IncreaseMoneyRequestCommand command) {
+        MemberMoneyJpaEntity entity =
+            increaseMoneyPort.increaseMemberMoney(
+                new MemberMoney.MembershipId(command.getTargetMembershipId()),
+                command.getAmount()
+            );
 
         if (entity != null) {
             return mapper.mapToDomainEntity(increaseMoneyPort.createMoneyChangingRequest(
@@ -85,8 +87,7 @@ public class IncreaseMoneyRequestService implements IncreaseMoneyRequestUseCase,
         return null;
     }
 
-    @Override
-    public MoneyChangingRequest increaseMoneyRequestAsync(IncreaseMoneyRequestCommand command) {
+    @Override public MoneyChangingRequest increaseMoneyRequestAsync(IncreaseMoneyRequestCommand command) {
 
         // Subtask : 각 서비스에 특정 membershipId로 Validation 을 하기 위한 Task
 
@@ -152,8 +153,7 @@ public class IncreaseMoneyRequestService implements IncreaseMoneyRequestUseCase,
 
     }
 
-    @Override
-    public void createMemberMoney(CreateMemberMoneyCommand command) {
+    @Override public void createMemberMoney(CreateMemberMoneyCommand command) {
         commandGateway.send(CreateMoneyCommand.builder()
                           .membershipId(command.getTargetMemebershipId())
                           .build())
@@ -171,10 +171,9 @@ public class IncreaseMoneyRequestService implements IncreaseMoneyRequestUseCase,
                       });
     }
 
-    @Override
-    public void increaseMoneyRequestByEvent(IncreaseMoneyRequestCommand command) {
-        MemberMoneyJpaEntity memberMoney = getMemberMoneyPort.getMemberMoney(
-            new MemberMoney.MembershipId(command.getTargetMembershipId()));
+    @Override public void increaseMoneyRequestByEvent(IncreaseMoneyRequestCommand command) {
+        MemberMoneyJpaEntity memberMoney =
+            getMemberMoneyPort.getMemberMoney(new MemberMoney.MembershipId(command.getTargetMembershipId()));
 
         commandGateway.send(IncreaseMoneyCommand.builder()
                           .membershipId(command.getTargetMembershipId())
@@ -185,14 +184,36 @@ public class IncreaseMoneyRequestService implements IncreaseMoneyRequestUseCase,
                           if (throwable == null) {
                               System.out.println("Aggregate ID: " + result.toString());
                               increaseMoneyPort.increaseMemberMoney(
-                                  new MemberMoney.MembershipId(command.getTargetMembershipId()),
-                                  command.getAmount()
-                              );
+                                  new MemberMoney.MembershipId(command.getTargetMembershipId()), command.getAmount());
                           } else {
                               throwable.printStackTrace();
                               System.out.println("error : " + throwable.getMessage());
                           }
                       });
     }
+
+    @Override public void increaseMoneyRequestByEventWithSaga(IncreaseMoneyRequestCommand command) {
+        MemberMoneyJpaEntity moneyEntity =
+            getMemberMoneyPort.getMemberMoney(new MemberMoney.MembershipId(command.getTargetMembershipId()));
+
+        // Saga의 시작을 나타내는 커맨드
+        commandGateway.send(RechargingMoneyRequestCreateCommand.builder()
+                          .aggregateIdentifier(moneyEntity.getAggregateIdentifier())
+                          .rechargingRequestId(UUID.randomUUID().toString())
+                          .membershipId(command.getTargetMembershipId())
+                          .amount(command.getAmount())
+                          .build())
+                      .whenComplete((Object result, Throwable throwable) -> {
+                              if (throwable == null) {
+                                  System.out.println("Saga ID: " + result.toString());
+                              } else {
+                                  throwable.printStackTrace();
+                                  System.out.println("error : " + throwable.getMessage());
+                              }
+                          }
+                      );
+
+    }
+
 
 }

@@ -139,6 +139,7 @@ services:
       - KAFKA_CLUSTERS_BOOTSTRAPSERVERS=kafka:29092
       - LOGGING_TOPIC=hexagonal.logging.out.stdout
       - SERVICE_MEMBERSHIP_URL=http://membership-service:8080
+      - SERVICE_BANKING_URL=http://banking-service:8080
 
   money-service:
     image: hexagonal-pay-money-service:1.0.0
@@ -164,6 +165,7 @@ services:
       - TASK_TOPIC=hexagonal.task.topic
       - TASK_RESULT_TOPIC=hexagonal.task.result.topic
       - SERVICE_MEMBERSHIP_URL=http://membership-service:8080
+      - SERVICE_BANKING_URL=http://banking-service:8080
 
   task-consumer:
     image: hexagonal-pay-task-consumer:1.0.0
