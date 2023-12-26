@@ -77,14 +77,13 @@ public class MemberMoneyAggregate {
         RegisteredBankAccountAggregateIdentifier identifier =
             getRegisteredBankAccountPort.getRegisteredBankAccount(command.getMembershipId());
 
-        RechargingRequestCreatedEvent rechargingEvent = RechargingRequestCreatedEvent.builder()
+        apply(RechargingRequestCreatedEvent.builder()
             .rechargingRequestId(command.getRechargingRequestId())
             .membershipId(command.getMembershipId())
             .amount(command.getAmount())
             .registeredBankAccountAggregateIdentifier(identifier.getAggregateIdentifier())
             .bankName(identifier.getBankName())
             .bankAccountNumber(identifier.getBankAccountNumber())
-            .build();
-        apply(rechargingEvent);
+            .build());
     }
 }

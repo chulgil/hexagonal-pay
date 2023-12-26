@@ -17,6 +17,7 @@ import me.chulgil.msa.banking.adapter.out.external.bank.FirmbankingResult;
 import me.chulgil.msa.banking.application.port.out.RequestExternalFirmbankingPort;
 import me.chulgil.msa.banking.application.port.out.RequestFirmbankingPort;
 import me.chulgil.msa.banking.domain.FirmbankingRequest;
+import me.chulgil.msa.common.event.RequestFirmbankingCommand;
 import me.chulgil.msa.common.event.RequestFirmbankingFinishedEvent;
 import me.chulgil.msa.common.event.RollbackFirmbankingFinishedEvent;
 import me.chulgil.msa.common.event.RollbackFirmbankingRequestCommand;
@@ -55,7 +56,7 @@ public class FirmbankingRequestAggregate {
     }
 
     @CommandHandler
-    public FirmbankingRequestAggregate(me.chulgil.msa.common.event.RequestFirmbankingCommand command,
+    public FirmbankingRequestAggregate(RequestFirmbankingCommand command,
                                        RequestFirmbankingPort firmbankingPort,
                                        RequestExternalFirmbankingPort externalFirmbankingPort) {
         System.out.println("FirmbankingRequestAggregate Handler");
