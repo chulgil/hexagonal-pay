@@ -1,16 +1,13 @@
 package me.chulgil.msa.common.event;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.axonframework.modelling.command.TargetAggregateIdentifier;
 
 /**
  * RegisteredBankAccount.aggregateIdentifier가
  * 고객(MembershipId)에 대해서 정상적인 상황인지 판단하는 커맨드
  */
-@Getter
+@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor

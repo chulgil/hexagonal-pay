@@ -6,10 +6,10 @@ import me.chulgil.msa.banking.domain.FirmbankingRequest;
 public interface RequestFirmbankingPort {
 
     FirmbankingRequestJpaEntity createFirmbankingRequest(
-        FirmbankingRequest.FromBankName fromBankingName,
-        FirmbankingRequest.FromBankAccountNumber fromBankingAccountNumber,
-        FirmbankingRequest.ToBankName toBankingName,
-        FirmbankingRequest.ToBankAccountNumber toBankingAccountNumber,
+        FirmbankingRequest.FromBankName fromBankName,
+        FirmbankingRequest.FromBankAccountNumber fromBankAccountNumber,
+        FirmbankingRequest.ToBankName toBankName,
+        FirmbankingRequest.ToBankAccountNumber toBankAccountNumber,
         FirmbankingRequest.MoneyAmount moneyAmount,
         FirmbankingRequest.FirmbankingStatus firmbankingStatus,
         FirmbankingRequest.FirmbankingAggregateIdentifier firmbankingAggregateIdentifier

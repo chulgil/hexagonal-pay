@@ -1,13 +1,10 @@
 package me.chulgil.msa.banking.adapter.axon.command;
 
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import me.chulgil.msa.common.SelfValidating;
 import org.jetbrains.annotations.NotNull;
 
-@Getter
+@Data
 @EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
 public class CreateFirmbankingRequestCommand extends SelfValidating<CreateFirmbankingRequestCommand> {

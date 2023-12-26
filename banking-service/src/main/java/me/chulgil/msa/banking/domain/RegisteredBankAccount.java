@@ -25,7 +25,7 @@ public class RegisteredBankAccount {
                                                                       BankAccountNumber account,
                                                                       LinkStatusIsValid isValid,
                                                                       AggregateIdentifier aggregateIdentifier) {
-        return new RegisteredBankAccount(id.registeredBankAccountId, membershipId.value, name.value, account.value,
+        return new RegisteredBankAccount(id.value, membershipId.value, name.value, account.value,
                 isValid.value, aggregateIdentifier.value);
     }
 
@@ -33,10 +33,10 @@ public class RegisteredBankAccount {
     public static class RegisteredBankAccountId {
 
         public RegisteredBankAccountId(String value) {
-            this.registeredBankAccountId = value;
+            this.value = value;
         }
 
-        String registeredBankAccountId;
+        String value;
     }
 
     @Value

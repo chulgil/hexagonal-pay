@@ -4,7 +4,7 @@ import lombok.*;
 import me.chulgil.msa.common.SelfValidating;
 import org.jetbrains.annotations.NotNull;
 
-@Getter
+@Data
 @EqualsAndHashCode(callSuper = false)
 public class CreateMoneyEvent extends SelfValidating<CreateMoneyEvent> {
 

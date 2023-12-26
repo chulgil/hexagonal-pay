@@ -2,7 +2,7 @@ package me.chulgil.msa.banking.adapter.axon.command;
 
 import lombok.*;
 
-@Getter
+@Data
 @Builder
 @EqualsAndHashCode(callSuper = false)
 @AllArgsConstructor

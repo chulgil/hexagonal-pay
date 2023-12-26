@@ -1,15 +1,12 @@
 package me.chulgil.msa.common.event;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.axonframework.modelling.command.TargetAggregateIdentifier;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
 @Builder
+@Data
 public class RequestFirmbankingCommand {
     private String requestFirmbankingId;
     @TargetAggregateIdentifier

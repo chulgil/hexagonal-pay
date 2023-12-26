@@ -4,9 +4,8 @@ import lombok.*;
 import me.chulgil.msa.common.SelfValidating;
 import org.jetbrains.annotations.NotNull;
 
-@Getter
 @EqualsAndHashCode(callSuper = false)
-@ToString
+@Data
 public class CreateMoneyCommand extends SelfValidating<CreateMoneyCommand> {
 
     @NotNull

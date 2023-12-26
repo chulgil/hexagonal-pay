@@ -6,7 +6,7 @@ import org.axonframework.modelling.command.TargetAggregateIdentifier;
 import org.jetbrains.annotations.NotNull;
 
 @Builder
-@Getter
+@Data
 @EqualsAndHashCode(callSuper = false)
 public class IncreaseMoneyCommand extends SelfValidating<IncreaseMoneyCommand> {
 

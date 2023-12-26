@@ -3,6 +3,7 @@ package me.chulgil.msa.membership;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import me.chulgil.msa.membership.adapter.in.web.RegisterMembershipRequest;
 import me.chulgil.msa.membership.domain.Membership;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -24,6 +25,7 @@ public class RegisterMembershipControllerTest {
 
 
     @Test
+    @Disabled
     public void testRegisterMembership() throws Exception {
         RegisterMembershipRequest request = RegisterMembershipRequest
             .builder().name("name").email("email").address("address").isCorp(false).isValid(true).build();

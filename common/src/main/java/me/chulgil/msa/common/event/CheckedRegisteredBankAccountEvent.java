@@ -1,11 +1,8 @@
 package me.chulgil.msa.common.event;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Getter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -19,5 +16,14 @@ public class CheckedRegisteredBankAccountEvent {
     private String firmbankingRequestAggregateIdentifier;
     private String fromBankName;
     private String fromBankAccountNumber;
-
+    @Override
+    public String toString() {
+        return "CheckedRegisteredBankAccountEvent{" +
+            "rechargingRequestId='" + rechargingRequestId + '\'' +
+            ", membershipId='" + membershipId + '\'' +
+            ", isChecked=" + isChecked +
+            ", amount=" + amount +
+            ", firmbankingRequestAggregateIdentifier='" + firmbankingRequestAggregateIdentifier + '\'' +
+            '}';
+    }
 }

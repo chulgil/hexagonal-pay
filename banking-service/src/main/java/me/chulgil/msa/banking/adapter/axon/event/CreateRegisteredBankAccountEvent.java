@@ -2,11 +2,10 @@ package me.chulgil.msa.banking.adapter.axon.event;
 
 import lombok.*;
 
-@Getter
+@Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode(callSuper = false)
 public class CreateRegisteredBankAccountEvent {
 
         private String membershipId;

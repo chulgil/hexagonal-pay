@@ -4,6 +4,7 @@ import static org.axonframework.modelling.command.AggregateLifecycle.apply;
 
 import java.util.UUID;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import me.chulgil.msa.banking.adapter.axon.command.CreateRegisteredBankAccountCommand;
 import me.chulgil.msa.banking.adapter.axon.event.CreateRegisteredBankAccountEvent;
 import me.chulgil.msa.banking.adapter.out.external.bank.BankAccount;
@@ -31,7 +32,8 @@ public class RegisteredBankAccountAggregate {
     private String bankAccountNumber;
 
     @CommandHandler
-    public RegisteredBankAccountAggregate(@NotNull CreateRegisteredBankAccountCommand command) {
+    public RegisteredBankAccountAggregate(CreateRegisteredBankAccountCommand command) {
+        System.out.println("CreateRegisteredBankAccountCommand Sourcing Handler");
         apply(CreateRegisteredBankAccountEvent.builder()
                 .membershipId(command.getMembershipId())
                 .bankName(command.getBankName())
@@ -39,21 +41,13 @@ public class RegisteredBankAccountAggregate {
                 .build());
     }
 
-    @EventSourcingHandler
-    public void on(CreateRegisteredBankAccountEvent event) {
-        System.out.println("CreateRegisteredBankAccountEvent Sourcing Handler");
-        id = UUID.randomUUID()
-                 .toString();
-        membershipId = event.getMembershipId();
-        bankName = event.getBankName();
-        bankAccountNumber = event.getBankAccountNumber();
-    }
-
     @CommandHandler
     public void handle(@NotNull CheckRegisteredBankAccountCommand command,
                        RequestBankAccountInfoPort bankAccountInfoPort) {
         System.out.println("CheckRegisteredBankAccountCommand Handler");
+
         // command를 통해 이 어그리거트(RegisteredBankAccount)가 정상인지를 확인
+        this.id = command.getAggregateIdentifier();
 
         BankAccount account = bankAccountInfoPort.getBankAccountInfo(GetBankAccountRequest.builder()
                 .bankName(command.getBankName())
@@ -66,10 +60,18 @@ public class RegisteredBankAccountAggregate {
                 .membershipId(command.getMembershipId())
                 .isChecked(account.isValid())
                 .amount(command.getAmount())
-                .firmbankingRequestAggregateIdentifier(UUID.randomUUID()
-                                                           .toString())
+                .firmbankingRequestAggregateIdentifier(UUID.randomUUID().toString())
                 .fromBankName(account.getBankName())
                 .fromBankAccountNumber(account.getBankAccountNumber())
                 .build());
+    }
+
+    @EventSourcingHandler
+    public void on(CreateRegisteredBankAccountEvent event) {
+        System.out.println("CreateRegisteredBankAccountEvent Sourcing Handler");
+        this.id = UUID.randomUUID().toString();
+        this.membershipId = event.getMembershipId();
+        this.bankName = event.getBankName();
+        this.bankAccountNumber = event.getBankAccountNumber();
     }
 }

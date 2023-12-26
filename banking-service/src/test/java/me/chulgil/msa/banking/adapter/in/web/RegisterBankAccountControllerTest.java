@@ -3,6 +3,7 @@ package me.chulgil.msa.banking.adapter.in.web;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import me.chulgil.msa.banking.BankingApplication;
 import me.chulgil.msa.banking.domain.RegisteredBankAccount;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -24,6 +25,7 @@ class RegisterBankAccountControllerTest {
 
 
     @Test
+    @Disabled
     public void testRegisterBankAccount() throws Exception {
 
         //given

@@ -1,12 +1,13 @@
 package me.chulgil.msa.money.adapter.in.axon.event;
 
 import lombok.Builder;
+import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import me.chulgil.msa.common.SelfValidating;
 import org.jetbrains.annotations.NotNull;
 
-@Getter
+@Data
 @EqualsAndHashCode(callSuper = false)
 public class IncreaseMoneyEvent extends SelfValidating<IncreaseMoneyEvent> {
 

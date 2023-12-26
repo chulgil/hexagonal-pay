@@ -21,7 +21,6 @@ import org.axonframework.modelling.command.AggregateIdentifier;
 import org.axonframework.spring.stereotype.Aggregate;
 
 
-@Table(name = "member_money")
 @Aggregate()
 @Getter
 @NoArgsConstructor
@@ -38,7 +37,7 @@ public class MemberMoneyAggregate {
     @CommandHandler public MemberMoneyAggregate(@NotNull CreateMoneyCommand command) {
         System.out.println("CreateMoneyCommand Handler");
         // store event
-        apply(new CreateMoneyEvent(command.getMembershipId()));
+        apply(CreateMoneyEvent.builder().targetMembershipId(command.getMembershipId()).build());
     }
 
     @EventSourcingHandler public void on(CreateMoneyEvent event) {
@@ -78,13 +77,14 @@ public class MemberMoneyAggregate {
         RegisteredBankAccountAggregateIdentifier identifier =
             getRegisteredBankAccountPort.getRegisteredBankAccount(command.getMembershipId());
 
-        apply(RechargingRequestCreatedEvent.builder()
+        RechargingRequestCreatedEvent rechargingEvent = RechargingRequestCreatedEvent.builder()
             .rechargingRequestId(command.getRechargingRequestId())
             .membershipId(command.getMembershipId())
             .amount(command.getAmount())
             .registeredBankAccountAggregateIdentifier(identifier.getAggregateIdentifier())
             .bankName(identifier.getBankName())
             .bankAccountNumber(identifier.getBankAccountNumber())
-            .build());
+            .build();
+        apply(rechargingEvent);
     }
 }

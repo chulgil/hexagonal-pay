@@ -1,14 +1,11 @@
 package me.chulgil.msa.money.adapter.in.axon.command;
 
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import me.chulgil.msa.common.SelfValidating;
 import org.axonframework.modelling.command.TargetAggregateIdentifier;
 import org.jetbrains.annotations.NotNull;
 
-@Getter
+@Data
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 public class RechargingMoneyRequestCreateCommand extends SelfValidating<RechargingMoneyRequestCreateCommand> {

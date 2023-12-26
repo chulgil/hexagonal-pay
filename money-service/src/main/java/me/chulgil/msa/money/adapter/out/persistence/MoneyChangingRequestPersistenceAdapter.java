@@ -56,6 +56,27 @@ public class MoneyChangingRequestPersistenceAdapter implements IncreaseMoneyPort
     }
 
     @Override
+    public MemberMoneyJpaEntity increaseMoney(MemberMoney.MembershipId membershipId,
+                                              int increaseMoneyAmount) {
+        MemberMoneyJpaEntity entity;
+        try {
+            List<MemberMoneyJpaEntity> entityList = moneyRepository.findByMembershipId(Long.parseLong(membershipId.getValue()));
+            entity = entityList.get(0);
+
+            entity.setBalance(entity.getBalance() + increaseMoneyAmount);
+            return moneyRepository.save(entity);
+        } catch (Exception e) {
+            entity = MemberMoneyJpaEntity.builder()
+                .membershipId(Long.parseLong(membershipId.getValue()))
+                .balance(increaseMoneyAmount)
+                .aggregateIdentifier("")
+                .build();
+            entity = moneyRepository.save(entity);
+            return entity;
+        }
+    }
+
+    @Override
     public void createMemberMoney(MemberMoney.MembershipId memberId,
                                   MemberMoney.MoneyAggregateIdentifier aggregateIdentifier) {
         MemberMoneyJpaEntity entity = MemberMoneyJpaEntity.builder()

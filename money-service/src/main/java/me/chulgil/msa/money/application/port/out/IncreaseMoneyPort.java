@@ -19,4 +19,7 @@ public interface IncreaseMoneyPort {
         MemberMoney.MembershipId membershipId,
         int increaseMoneyAmount
     );
+
+    MemberMoneyJpaEntity increaseMoney(MemberMoney.MembershipId membershipId,
+                                       int moneyAmount);
 }
