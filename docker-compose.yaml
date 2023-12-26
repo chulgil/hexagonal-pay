@@ -47,9 +47,9 @@ services:
       - KAFKA_ADVERTISED_LISTENERS=LC://kafka:29092,LX://localhost:9092
       - KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=LC:PLAINTEXT,LX:PLAINTEXT
       - KAFKA_INTER_BROKER_LISTENER_NAME=LC
-      - KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR=1
-      - KAFKA_TRANSACTION_STATE_LOG_MIN_ISR=1
-      - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1
+#      - KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR=1
+#      - KAFKA_TRANSACTION_STATE_LOG_MIN_ISR=1
+#      - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1
     depends_on:
       - zookeeper
 
@@ -139,7 +139,7 @@ services:
       - KAFKA_CLUSTERS_BOOTSTRAPSERVERS=kafka:29092
       - LOGGING_TOPIC=hexagonal.logging.out.stdout
       - SERVICE_MEMBERSHIP_URL=http://membership-service:8080
-      - SERVICE_BANKING_URL=http://banking-service:8080
+      - SERVICE_MONEY_URL=http://money-service:8080
 
   money-service:
     image: hexagonal-pay-money-service:1.0.0

@@ -54,13 +54,14 @@ public class RegisteredBankAccountAggregate {
                 .bankAccountNumber(command.getBankAccountNumber())
                 .build());
 
+        String firmbankingUUID = UUID.randomUUID().toString();
         apply(CheckedRegisteredBankAccountEvent.builder()
                 .rechargingRequestId(command.getRechargeRequestId())
                 .checkRegisteredBankAccountId(command.getCheckRegisteredBankAccountId())
                 .membershipId(command.getMembershipId())
                 .isChecked(account.isValid())
                 .amount(command.getAmount())
-                .firmbankingRequestAggregateIdentifier(UUID.randomUUID().toString())
+                .firmbankingRequestAggregateIdentifier(firmbankingUUID)
                 .fromBankName(account.getBankName())
                 .fromBankAccountNumber(account.getBankAccountNumber())
                 .build());

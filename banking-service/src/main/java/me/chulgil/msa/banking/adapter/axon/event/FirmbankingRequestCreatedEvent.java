@@ -1,13 +1,11 @@
 package me.chulgil.msa.banking.adapter.axon.event;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
+@EqualsAndHashCode(callSuper = false)
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
+@Data
 @Builder
 public class FirmbankingRequestCreatedEvent {
     private String fromBankName;
