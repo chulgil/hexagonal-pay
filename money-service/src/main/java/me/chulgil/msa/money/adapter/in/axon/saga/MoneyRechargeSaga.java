@@ -2,7 +2,12 @@ package me.chulgil.msa.money.adapter.in.axon.saga;
 
 import java.util.UUID;
 import lombok.NoArgsConstructor;
-import me.chulgil.msa.common.event.*;
+import me.chulgil.msa.common.event.CheckRegisteredBankAccountCommand;
+import me.chulgil.msa.common.event.CheckedRegisteredBankAccountEvent;
+import me.chulgil.msa.common.event.RequestFirmbankingCommand;
+import me.chulgil.msa.common.event.RequestFirmbankingFinishedEvent;
+import me.chulgil.msa.common.event.RollbackFirmbankingFinishedEvent;
+import me.chulgil.msa.common.event.RollbackFirmbankingRequestCommand;
 import me.chulgil.msa.money.adapter.in.axon.event.RechargingRequestCreatedEvent;
 import me.chulgil.msa.money.adapter.out.persistence.MemberMoneyJpaEntity;
 import me.chulgil.msa.money.application.port.out.IncreaseMoneyPort;
@@ -41,7 +46,8 @@ public class MoneyRechargeSaga {
         String rechargingRequestId = event.getRechargingRequestId();
         SagaLifecycle.associateWith("rechargingRequestId", rechargingRequestId);
 
-        String checkRegisteredBankAccountId = UUID.randomUUID().toString();
+        String checkRegisteredBankAccountId = UUID.randomUUID()
+                                                  .toString();
         SagaLifecycle.associateWith("checkRegisteredBankAccountId", checkRegisteredBankAccountId);
 
         // "충전 요청" 이 시작 되었다.
@@ -50,14 +56,14 @@ public class MoneyRechargeSaga {
         // CheckRegisteredBankAccountCommand -> Check Bank Account
         // -> axon server -> Banking Service -> Common
         commandGateway.send(CheckRegisteredBankAccountCommand.builder()
-                .aggregateIdentifier(event.getRegisteredBankAccountAggregateIdentifier())
-                .rechargeRequestId(event.getRechargingRequestId())
-                .membershipId(event.getMembershipId())
-                .checkRegisteredBankAccountId(checkRegisteredBankAccountId)
-                .bankName(event.getBankName())
-                .bankAccountNumber(event.getBankAccountNumber())
-                .amount(event.getAmount())
-                .build())
+                              .aggregateIdentifier(event.getRegisteredBankAccountAggregateIdentifier())
+                              .rechargeRequestId(event.getRechargingRequestId())
+                              .membershipId(event.getMembershipId())
+                              .checkRegisteredBankAccountId(checkRegisteredBankAccountId)
+                              .bankName(event.getBankName())
+                              .bankAccountNumber(event.getBankAccountNumber())
+                              .amount(event.getAmount())
+                              .build())
                       .whenComplete((result, throwable) -> {
                           if (throwable != null) {
                               throwable.printStackTrace();
@@ -78,7 +84,8 @@ public class MoneyRechargeSaga {
             System.out.println("CheckedRegisteredBankAccountEvent event Failed");
         }
 
-        String requestFirmbankingId = UUID.randomUUID().toString();
+        String requestFirmbankingId = UUID.randomUUID()
+                                          .toString();
         SagaLifecycle.associateWith("requestFirmbankingId", requestFirmbankingId);
 
         // 송금 요청
@@ -93,22 +100,20 @@ public class MoneyRechargeSaga {
                               .toBankName("test2")
                               .toBankAccountNumber("test2")
                               .moneyAmount(event.getAmount())
-                              .build(
-                              ))
-                      .whenComplete(
-                              (result, throwable) -> {
-                                  if (throwable != null) {
-                                      throwable.printStackTrace();
-                                      System.out.println("RequestFirmbankingCommand Command failed");
-                                  } else {
-                                      System.out.println("RequestFirmbankingCommand Command success");
-                                  }
-                              }
-                      );
+                              .build())
+                      .whenComplete((result, throwable) -> {
+                          if (throwable != null) {
+                              throwable.printStackTrace();
+                              System.out.println("RequestFirmbankingCommand Command failed");
+                          } else {
+                              System.out.println("RequestFirmbankingCommand Command success");
+                          }
+                      });
     }
 
     @SagaEventHandler(associationProperty = "requestFirmbankingId")
-    public void handle(RequestFirmbankingFinishedEvent event, IncreaseMoneyPort increaseMoneyPort) {
+    public void handle(RequestFirmbankingFinishedEvent event,
+                       IncreaseMoneyPort increaseMoneyPort) {
         System.out.println("RequestFirmbankingFinishedEvent saga: " + event.toString());
         boolean status = event.getStatus() == 0;
         if (status) {
@@ -118,35 +123,27 @@ public class MoneyRechargeSaga {
         }
 
         // DB Update 명령.
-        MemberMoneyJpaEntity resultEntity =
-            increaseMoneyPort.increaseMoney(
-                new MemberMoney.MembershipId(event.getMembershipId())
-                , event.getMoneyAmount()
-            );
+        MemberMoneyJpaEntity resultEntity = increaseMoneyPort.increaseMoney(
+                new MemberMoney.MembershipId(event.getMembershipId()), event.getMoneyAmount());
 
         if (resultEntity == null) {
             // 실패 시, 롤백 이벤트
-            String rollbackFirmbankingId = UUID.randomUUID().toString();
+            String rollbackFirmbankingId = UUID.randomUUID()
+                                               .toString();
             SagaLifecycle.associateWith("rollbackFirmbankingId", rollbackFirmbankingId);
-            commandGateway.send(new RollbackFirmbankingRequestCommand(
-                rollbackFirmbankingId
-                ,event.getRequestFirmbankingAggregateIdentifier()
-                , event.getRechargingRequestId()
-                , event.getMembershipId()
-                , event.getToBankName()
-                , event.getToBankAccountNumber()
-                , event.getMoneyAmount()
-            )).whenComplete(
-                (result, throwable) -> {
-                    if (throwable != null) {
-                        throwable.printStackTrace();
-                        System.out.println("RollbackFirmbankingRequestCommand Command failed");
-                    } else {
-                        System.out.println("Saga success : "+ result.toString());
-                        SagaLifecycle.end();
-                    }
-                }
-            );
+            commandGateway.send(new RollbackFirmbankingRequestCommand(rollbackFirmbankingId,
+                                  event.getRequestFirmbankingAggregateIdentifier(), event.getRechargingRequestId(),
+                                  event.getMembershipId(), event.getToBankName(), event.getToBankAccountNumber(),
+                                  event.getMoneyAmount()))
+                          .whenComplete((result, throwable) -> {
+                              if (throwable != null) {
+                                  throwable.printStackTrace();
+                                  System.out.println("RollbackFirmbankingRequestCommand Command failed");
+                              } else {
+                                  System.out.println("Saga success : " + result.toString());
+                                  SagaLifecycle.end();
+                              }
+                          });
         } else {
             // 성공 시, saga 종료.
             SagaLifecycle.end();

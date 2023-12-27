@@ -3,11 +3,9 @@ package me.chulgil.msa.banking.adapter.axon.aggregate;
 import static org.axonframework.modelling.command.AggregateLifecycle.apply;
 
 import java.util.UUID;
-
+import javax.validation.constraints.NotNull;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 import me.chulgil.msa.banking.adapter.axon.command.CreateFirmbankingRequestCommand;
 import me.chulgil.msa.banking.adapter.axon.command.UpdateFirmbankingRequestCommand;
 import me.chulgil.msa.banking.adapter.axon.event.FirmbankingRequestCreatedEvent;
@@ -25,8 +23,6 @@ import org.axonframework.commandhandling.CommandHandler;
 import org.axonframework.eventsourcing.EventSourcingHandler;
 import org.axonframework.modelling.command.AggregateIdentifier;
 import org.axonframework.spring.stereotype.Aggregate;
-
-import javax.validation.constraints.NotNull;
 
 @Aggregate()
 @Data

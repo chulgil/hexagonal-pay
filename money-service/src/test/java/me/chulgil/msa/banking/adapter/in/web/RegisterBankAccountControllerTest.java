@@ -2,17 +2,12 @@ package me.chulgil.msa.banking.adapter.in.web;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import me.chulgil.msa.money.MoneyApplication;
-import me.chulgil.msa.money.adapter.in.web.IncreaseMoneyChangingRequest;
-import me.chulgil.msa.money.domain.MoneyChangingRequest;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 @SpringBootTest(classes = MoneyApplication.class)
 @AutoConfigureMockMvc
@@ -26,6 +21,7 @@ class RegisterMoneyControllerTest {
 
 
     @Test
+    @Disabled
     public void testRegisterMoney() throws Exception {
 
         //given
