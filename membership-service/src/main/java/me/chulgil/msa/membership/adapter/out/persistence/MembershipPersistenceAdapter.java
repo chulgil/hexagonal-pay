@@ -1,11 +1,13 @@
 package me.chulgil.msa.membership.adapter.out.persistence;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import me.chulgil.msa.common.PersistenceAdapter;
 import me.chulgil.msa.membership.application.port.out.FindMembershipPort;
 import me.chulgil.msa.membership.application.port.out.ModifyMembershipPort;
 import me.chulgil.msa.membership.application.port.out.RegisterMembershipPort;
 import me.chulgil.msa.membership.domain.Membership;
+import me.chulgil.msa.membership.domain.Membership.MembershipAddress;
 
 @PersistenceAdapter
 @RequiredArgsConstructor
@@ -16,6 +18,13 @@ public class MembershipPersistenceAdapter implements RegisterMembershipPort, Fin
     @Override
     public MembershipJpaEntity findMembership(Membership.MembershipId membershipId) {
         return repository.getById(Long.parseLong(membershipId.getValue()));
+    }
+
+    @Override
+    public List<MembershipJpaEntity> findMembershipListByAddress(MembershipAddress membershipAddress) {
+        // 관악구, 서초구, 강남구 중 하나
+        String address = membershipAddress.getValue();
+        return repository.findByAddress(address);
     }
 
     @Override
