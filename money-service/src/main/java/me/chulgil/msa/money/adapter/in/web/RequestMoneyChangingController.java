@@ -1,11 +1,14 @@
 package me.chulgil.msa.money.adapter.in.web;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import me.chulgil.msa.common.WebAdapter;
 import me.chulgil.msa.money.application.port.in.CreateMemberMoneyCommand;
 import me.chulgil.msa.money.application.port.in.CreateMemberMoneyUseCase;
+import me.chulgil.msa.money.application.port.in.GetMemberMoneyListByMembershipIdsCommand;
 import me.chulgil.msa.money.application.port.in.IncreaseMoneyRequestCommand;
 import me.chulgil.msa.money.application.port.in.IncreaseMoneyRequestUseCase;
+import me.chulgil.msa.money.domain.MemberMoney;
 import me.chulgil.msa.money.domain.MoneyChangingRequest;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,16 +27,16 @@ public class RequestMoneyChangingController {
     MoneyChangingResultDetail increaseMoneyChangingRequest(@RequestBody IncreaseMoneyChangingRequest request) {
 
         IncreaseMoneyRequestCommand command = IncreaseMoneyRequestCommand.builder()
-            .targetMembershipId(request.getTargetMembershipId())
-            .amount(request.getAmount())
-            .build();
+                .targetMembershipId(request.getTargetMembershipId())
+                .amount(request.getAmount())
+                .build();
 
         MoneyChangingRequest moneyChangingRequest = increaseUseCase.increaseMoneyRequest(command);
         return new MoneyChangingResultDetail(
-            moneyChangingRequest.getMoneyChangingRequestId(),
-            0,
-            0,
-            moneyChangingRequest.getChangingMoneyAmount()
+                moneyChangingRequest.getMoneyChangingRequestId(),
+                0,
+                0,
+                moneyChangingRequest.getChangingMoneyAmount()
         );
     }
 
@@ -41,16 +44,16 @@ public class RequestMoneyChangingController {
     MoneyChangingResultDetail increaseAsyncMoneyChangingRequest(@RequestBody IncreaseMoneyChangingRequest request) {
 
         IncreaseMoneyRequestCommand command = IncreaseMoneyRequestCommand.builder()
-            .targetMembershipId(request.getTargetMembershipId())
-            .amount(request.getAmount())
-            .build();
+                .targetMembershipId(request.getTargetMembershipId())
+                .amount(request.getAmount())
+                .build();
 
         MoneyChangingRequest moneyChangingRequest = increaseUseCase.increaseMoneyRequestAsync(command);
         return new MoneyChangingResultDetail(
-            moneyChangingRequest.getMoneyChangingRequestId(),
-            0,
-            0,
-            moneyChangingRequest.getChangingMoneyAmount()
+                moneyChangingRequest.getMoneyChangingRequestId(),
+                0,
+                0,
+                moneyChangingRequest.getChangingMoneyAmount()
         );
     }
 
@@ -67,19 +70,28 @@ public class RequestMoneyChangingController {
     @PostMapping(path = "/money/create-member-money")
     void createMemberMoney(@RequestBody CreateMemberMoneyRequest request) {
         createMoneyUseCase.createMemberMoney(
-            CreateMemberMoneyCommand.builder()
-                .targetMembershipId(request.getTargetMembershipId())
-                .build());
+                CreateMemberMoneyCommand.builder()
+                        .targetMembershipId(request.getTargetMembershipId())
+                        .build());
     }
 
     @PostMapping(path = "/money/increase-eda")
     void increaseMoneyChangingRequestByEvent(@RequestBody IncreaseMoneyChangingRequest request) {
         IncreaseMoneyRequestCommand command = IncreaseMoneyRequestCommand.builder()
-            .targetMembershipId(request.getTargetMembershipId())
-            .amount(request.getAmount())
-            .build();
+                .targetMembershipId(request.getTargetMembershipId())
+                .amount(request.getAmount())
+                .build();
 
         increaseUseCase.increaseMoneyRequestByEventWithSaga(command);
+    }
+
+    @PostMapping(path = "/money/member-money")
+    List<MemberMoney> getMemberMoneyListByMembershipIds(@RequestBody GetMemberMoneyListByMembershipIdsRequest request) {
+        GetMemberMoneyListByMembershipIdsCommand command = GetMemberMoneyListByMembershipIdsCommand.builder()
+                .membershipIds(request.getMembershipIds())
+                .build();
+
+        return increaseUseCase.getMemberMoneyListByMembershipIds(command);
     }
 
 }

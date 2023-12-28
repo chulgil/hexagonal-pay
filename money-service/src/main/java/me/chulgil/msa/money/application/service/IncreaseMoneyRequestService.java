@@ -1,6 +1,9 @@
 package me.chulgil.msa.money.application.service;
 
 import io.micrometer.core.lang.Nullable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import me.chulgil.msa.common.CountDownLatchManager;
 import me.chulgil.msa.common.RechargingMoneyTask;
@@ -9,10 +12,17 @@ import me.chulgil.msa.common.UseCase;
 import me.chulgil.msa.money.adapter.in.axon.command.CreateMoneyCommand;
 import me.chulgil.msa.money.adapter.in.axon.command.IncreaseMoneyCommand;
 import me.chulgil.msa.money.adapter.in.axon.command.RechargingMoneyRequestCreateCommand;
+import me.chulgil.msa.money.adapter.out.MemberMoneyMapper;
 import me.chulgil.msa.money.adapter.out.persistence.MemberMoneyJpaEntity;
 import me.chulgil.msa.money.adapter.out.persistence.MoneyChangingRequestMapper;
-import me.chulgil.msa.money.application.port.in.*;
+import me.chulgil.msa.money.application.port.in.CreateMemberMoneyCommand;
+import me.chulgil.msa.money.application.port.in.CreateMemberMoneyUseCase;
+import me.chulgil.msa.money.application.port.in.GetMemberMoneyListByMembershipIdsCommand;
+import me.chulgil.msa.money.application.port.in.GetMemberMoneyPort;
+import me.chulgil.msa.money.application.port.in.IncreaseMoneyRequestCommand;
+import me.chulgil.msa.money.application.port.in.IncreaseMoneyRequestUseCase;
 import me.chulgil.msa.money.application.port.out.CreateMemberMoneyPort;
+import me.chulgil.msa.money.application.port.out.GetMemberMoneyListPort;
 import me.chulgil.msa.money.application.port.out.GetMembershipPort;
 import me.chulgil.msa.money.application.port.out.IncreaseMoneyPort;
 import me.chulgil.msa.money.application.port.out.SendRechargingMoneyTaskPort;
@@ -20,10 +30,6 @@ import me.chulgil.msa.money.domain.MemberMoney;
 import me.chulgil.msa.money.domain.MoneyChangingRequest;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 
 @UseCase
 @RequiredArgsConstructor
@@ -38,13 +44,16 @@ public class IncreaseMoneyRequestService implements IncreaseMoneyRequestUseCase,
 
     private final IncreaseMoneyPort increaseMoneyPort;
 
-    private final MoneyChangingRequestMapper mapper;
+    private final MoneyChangingRequestMapper changingRequestMapper;
+
+    private final MemberMoneyMapper moneyMapper;
 
     private final CommandGateway commandGateway;
 
     private final CreateMemberMoneyPort createMemberMoneyPort;
 
     private final GetMemberMoneyPort getMemberMoneyPort;
+    private final GetMemberMoneyListPort getMemberMoneyListPort;
 
     @Override
     public MoneyChangingRequest increaseMoneyRequest(IncreaseMoneyRequestCommand command) {
@@ -70,18 +79,19 @@ public class IncreaseMoneyRequestService implements IncreaseMoneyRequestUseCase,
     @Nullable
     private MoneyChangingRequest getMoneyChangingRequest(IncreaseMoneyRequestCommand command) {
         MemberMoneyJpaEntity entity =
-            increaseMoneyPort.increaseMemberMoney(
-                new MemberMoney.MembershipId(command.getTargetMembershipId()),
-                command.getAmount()
-            );
+                increaseMoneyPort.increaseMemberMoney(
+                        new MemberMoney.MembershipId(command.getTargetMembershipId()),
+                        command.getAmount()
+                );
 
         if (entity != null) {
-            return mapper.mapToDomainEntity(increaseMoneyPort.createMoneyChangingRequest(
-                new MoneyChangingRequest.TargetMembershipId(command.getTargetMembershipId()),
-                new MoneyChangingRequest.MoneyChangingType(1),
-                new MoneyChangingRequest.ChangingMoneyAmount(command.getAmount()),
-                new MoneyChangingRequest.MoneyChangingStatus(1),
-                new MoneyChangingRequest.Uuid(UUID.randomUUID().toString())
+            return changingRequestMapper.mapToDomainEntity(increaseMoneyPort.createMoneyChangingRequest(
+                    new MoneyChangingRequest.TargetMembershipId(command.getTargetMembershipId()),
+                    new MoneyChangingRequest.MoneyChangingType(1),
+                    new MoneyChangingRequest.ChangingMoneyAmount(command.getAmount()),
+                    new MoneyChangingRequest.MoneyChangingStatus(1),
+                    new MoneyChangingRequest.Uuid(UUID.randomUUID()
+                                                      .toString())
             ));
         }
 
@@ -96,35 +106,35 @@ public class IncreaseMoneyRequestService implements IncreaseMoneyRequestUseCase,
 
         // 1. Subtask 를 생성한다. (Subtask)
         SubTask validMembershipTask = SubTask.builder()
-            .subTaskName("validMembershipTask : " + "멤버십 유효성 검사")
-            .membershipId(command.getTargetMembershipId())
-            .taskType("membership")
-            .status("ready")
-            .build();
+                .subTaskName("validMembershipTask : " + "멤버십 유효성 검사")
+                .membershipId(command.getTargetMembershipId())
+                .taskType("membership")
+                .status("ready")
+                .build();
 
         // Banking Account Validation
         // Amount Money Firmbanking --> 무조건 받았다고 가정
         SubTask validBankingAccountTask = SubTask.builder()
-            .subTaskName("validBankingAccountTask : " + "뱅킹 계좌 유효성 검사")
-            .membershipId(command.getTargetMembershipId())
-            .taskType("banking")
-            .status("ready")
-            .build();
+                .subTaskName("validBankingAccountTask : " + "뱅킹 계좌 유효성 검사")
+                .membershipId(command.getTargetMembershipId())
+                .taskType("banking")
+                .status("ready")
+                .build();
 
         List<SubTask> subTasks = new ArrayList<>();
         subTasks.add(validMembershipTask);
         subTasks.add(validBankingAccountTask);
 
         RechargingMoneyTask task = RechargingMoneyTask.builder()
-            .taskId(UUID.randomUUID()
-                .toString())
-            .taskName("RechargingMoneyTask : " + "머니 증액")
-            .membershipId(command.getTargetMembershipId())
-            .subTasks(subTasks)
-            .toBankName("CG페이")
-            .toBankAccountNumber("1234-1234-1234")
-            .moneyAmount(command.getAmount())
-            .build();
+                .taskId(UUID.randomUUID()
+                            .toString())
+                .taskName("RechargingMoneyTask : " + "머니 증액")
+                .membershipId(command.getTargetMembershipId())
+                .subTasks(subTasks)
+                .toBankName("CG페이")
+                .toBankAccountNumber("1234-1234-1234")
+                .moneyAmount(command.getAmount())
+                .build();
 
         // 2. Kafka Cluster Produce
         // Task Produce
@@ -135,7 +145,7 @@ public class IncreaseMoneyRequestService implements IncreaseMoneyRequestUseCase,
         try {
             // Task 완료 이벤트 올 때까지 기다린다.
             countDownLatchManager.getCountDownLatch(task.getTaskId())
-                .await();
+                                 .await();
 
             // 3-1. task-consumer
             // 4. Task Result Consumer
@@ -159,70 +169,83 @@ public class IncreaseMoneyRequestService implements IncreaseMoneyRequestUseCase,
     @Override
     public void createMemberMoney(CreateMemberMoneyCommand command) {
         commandGateway.send(CreateMoneyCommand.builder()
-                .membershipId(command.getTargetMemebershipId())
-                .build())
-            .whenComplete((Object result, Throwable throwable) -> {
-                if (throwable == null) {
-                    System.out.println("Create Money Aggregate ID: " + result.toString());
-                    createMemberMoneyPort.createMemberMoney(
-                        new MemberMoney.MembershipId(command.getTargetMemebershipId()),
-                        new MemberMoney.MoneyAggregateIdentifier(result.toString())
-                    );
-                } else {
-                    throwable.printStackTrace();
-                    System.out.println("error : " + throwable.getMessage());
-                }
-            });
+                                    .membershipId(command.getTargetMemebershipId())
+                                    .build())
+                      .whenComplete((Object result, Throwable throwable) -> {
+                          if (throwable == null) {
+                              System.out.println("Create Money Aggregate ID: " + result.toString());
+                              createMemberMoneyPort.createMemberMoney(
+                                      new MemberMoney.MembershipId(command.getTargetMemebershipId()),
+                                      new MemberMoney.MoneyAggregateIdentifier(result.toString())
+                              );
+                          } else {
+                              throwable.printStackTrace();
+                              System.out.println("error : " + throwable.getMessage());
+                          }
+                      });
     }
 
     @Override
     public void increaseMoneyRequestByEvent(IncreaseMoneyRequestCommand command) {
         MemberMoneyJpaEntity memberMoney =
-            getMemberMoneyPort.getMemberMoney(new MemberMoney.MembershipId(command.getTargetMembershipId()));
+                getMemberMoneyPort.getMemberMoney(new MemberMoney.MembershipId(command.getTargetMembershipId()));
 
         commandGateway.send(IncreaseMoneyCommand.builder()
-                .membershipId(command.getTargetMembershipId())
-                .aggregateIdentifier(memberMoney.getAggregateIdentifier())
-                .amount(command.getAmount())
-                .build())
-            .whenComplete((Object result, Throwable throwable) -> {
-                if (throwable == null) {
-                    System.out.println("Aggregate ID: " + result.toString());
-                    increaseMoneyPort.increaseMemberMoney(
-                        new MemberMoney.MembershipId(command.getTargetMembershipId()),
-                        command.getAmount()
-                    );
-                } else {
-                    throwable.printStackTrace();
-                    System.out.println("error : " + throwable.getMessage());
-                }
-            });
+                                    .membershipId(command.getTargetMembershipId())
+                                    .aggregateIdentifier(memberMoney.getAggregateIdentifier())
+                                    .amount(command.getAmount())
+                                    .build())
+                      .whenComplete((Object result, Throwable throwable) -> {
+                          if (throwable == null) {
+                              System.out.println("Aggregate ID: " + result.toString());
+                              increaseMoneyPort.increaseMemberMoney(
+                                      new MemberMoney.MembershipId(command.getTargetMembershipId()),
+                                      command.getAmount()
+                              );
+                          } else {
+                              throwable.printStackTrace();
+                              System.out.println("error : " + throwable.getMessage());
+                          }
+                      });
+    }
+
+    @Override
+    public List<MemberMoney> getMemberMoneyListByMembershipIds(GetMemberMoneyListByMembershipIdsCommand command) {
+        List<MemberMoneyJpaEntity> entityList =
+                getMemberMoneyListPort.getMemberMoney(command.getMembershipIds());
+        List<MemberMoney> memberMoneyList = new ArrayList<>();
+        for (MemberMoneyJpaEntity entity : entityList) {
+            memberMoneyList.add(moneyMapper.mapToDomainEntity(entity));
+        }
+        return memberMoneyList;
     }
 
     @Override
     public void increaseMoneyRequestByEventWithSaga(IncreaseMoneyRequestCommand command) {
         MemberMoneyJpaEntity moneyEntity =
-            getMemberMoneyPort.getMemberMoney(new MemberMoney.MembershipId(command.getTargetMembershipId()));
+                getMemberMoneyPort.getMemberMoney(new MemberMoney.MembershipId(command.getTargetMembershipId()));
 
         RechargingMoneyRequestCreateCommand rechargingCommand = RechargingMoneyRequestCreateCommand.builder()
-            .aggregateIdentifier(moneyEntity.getAggregateIdentifier())
-            .rechargingRequestId(UUID.randomUUID().toString())
-            .membershipId(command.getTargetMembershipId())
-            .amount(command.getAmount())
-            .build();
+                .aggregateIdentifier(moneyEntity.getAggregateIdentifier())
+                .rechargingRequestId(UUID.randomUUID()
+                                         .toString())
+                .membershipId(command.getTargetMembershipId())
+                .amount(command.getAmount())
+                .build();
+
         // Saga의 시작을 나타내는 커맨드
         commandGateway.send(rechargingCommand)
-            .whenComplete((Object result, Throwable throwable) -> {
-                    if (throwable == null) {
-                        if (result != null) {
-                            System.out.println("Saga ID: " + result.toString());
-                        }
-                    } else {
-                        throwable.printStackTrace();
-                        System.out.println("error : " + throwable.getMessage());
-                    }
-                }
-            );
+                      .whenComplete((Object result, Throwable throwable) -> {
+                                        if (throwable == null) {
+                                            if (result != null) {
+                                                System.out.println("Saga ID: " + result.toString());
+                                            }
+                                        } else {
+                                            throwable.printStackTrace();
+                                            System.out.println("error : " + throwable.getMessage());
+                                        }
+                                    }
+                      );
 
     }
 

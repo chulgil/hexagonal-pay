@@ -4,4 +4,15 @@ dependencies {
     implementation 'org.json:json:20200518'
 }
 
+bootRun {
+    enabled = false
+}
+
+bootJar {
+    enabled = false
+}
+
+bootBuildImage {
+    enabled = false
+}
 
