@@ -12,4 +12,5 @@ include 'payment-service'
 //include 'settlement-service'
 include 'payment-service'
 include 'utility'
+include 'money-query-service'
 

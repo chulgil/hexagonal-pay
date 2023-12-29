@@ -178,3 +178,7 @@ axon-server-se/*/*
 db/data/*
 
 # End of https://www.toptal.com/developers/gitignore/api/intellij,java
+
+
+# Docker-Compose ENV file
+.env

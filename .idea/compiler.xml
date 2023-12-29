@@ -15,6 +15,7 @@
         <module name="hexagonal-pay.utility.main" />
         <module name="hexagonal-pay.banking-service.main" />
         <module name="hexagonal-pay.remittance-service.main" />
+        <module name="hexagonal-pay.money-query-service.main" />
         <module name="hexagonal-pay.task-consumer.main" />
         <module name="hexagonal-pay.common.main" />
         <module name="hexagonal-pay.money-service.main" />
