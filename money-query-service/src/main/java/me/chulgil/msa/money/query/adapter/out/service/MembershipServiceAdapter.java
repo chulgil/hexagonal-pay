@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import me.chulgil.msa.common.CommonHttpClient;
 import me.chulgil.msa.money.query.application.port.out.GetMemberAddressInfoPort;
 import me.chulgil.msa.money.query.application.port.out.MemberAddressInfo;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -14,7 +15,7 @@ public class MembershipServiceAdapter implements GetMemberAddressInfoPort {
     private final String membershipServiceUrl;
 
     public MembershipServiceAdapter(CommonHttpClient httpClient,
-                                    String membershipServiceUrl) {
+                                    @Value("${service.membership.url}") String membershipServiceUrl) {
         this.httpClient = httpClient;
         this.membershipServiceUrl = membershipServiceUrl;
     }
@@ -25,7 +26,8 @@ public class MembershipServiceAdapter implements GetMemberAddressInfoPort {
         String url = String.join("/", membershipServiceUrl, "membership", membershipId);
 
         try {
-            String jsonResponse = httpClient.sendGetRequest(url).body();
+            String jsonResponse = httpClient.sendGetRequest(url)
+                                            .body();
 
             Membership membership = new ObjectMapper().readValue(jsonResponse, Membership.class);
 

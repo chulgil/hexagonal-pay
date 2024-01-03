@@ -6,6 +6,8 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import org.json.JSONObject;
 
@@ -19,36 +21,34 @@ public class DummyMoneyDataSimulator {
 
     private static final String[] BANK_NAME = {"KBB", "신한한", "우리리"};
 
-//    public static void main(String[] args) throws InterruptedException {
-//        Random random = new Random();
-//        List<Integer> readyMemberList = new ArrayList<>();
-//
-//        while (true) {
-//            int amount = random.nextInt(20001) - 10000; // Random number between -100000 and 100000
-//            int targetMembershipId = random.nextInt(1000) + 1; // Random number between 1 and 100000
-//
-//            registerAccountSimulator(REGISTER_ACCOUNT_API_ENDPOINT, targetMembershipId);
-//            createMemberMoneySimulator(CREATE_MONEY_API_ENDPOINT, targetMembershipId);
-//            Thread.sleep(100);
-//            readyMemberList.add(targetMembershipId);
-//
-//            increaseMemberMoneySimulator(INCREASE_API_ENDPOINT, amount, targetMembershipId);
-//
-//            amount = random.nextInt(20001) - 10000; // Random number between -100000 and 100000
-//            Integer decreaseTargetMembershipId = readyMemberList.get(random.nextInt(readyMemberList.size()));
-//            increaseMemberMoneySimulator(DECREASE_API_ENDPOINT, amount, decreaseTargetMembershipId);
-//
-//            try {
-//                Thread.sleep(100); // Wait for 1 second before making the next API call
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//    }
+    public static void main(String[] args) throws InterruptedException {
+        Random random = new Random();
+        List<Integer> readyMemberList = new ArrayList<>();
 
-    private static void increaseMemberMoneySimulator(String apiEndpoint,
-                                                     int amount,
-                                                     int targetMembershipId) {
+        while (true) {
+            int amount = random.nextInt(20001) - 10000; // Random number between -100000 and 100000
+            int targetMembershipId = random.nextInt(10) + 1; // Random number between 1 and 100000
+
+            registerAccountSimulator(REGISTER_ACCOUNT_API_ENDPOINT, targetMembershipId);
+            createMemberMoneySimulator(CREATE_MONEY_API_ENDPOINT, targetMembershipId);
+            Thread.sleep(1000);
+            readyMemberList.add(targetMembershipId);
+
+            increaseMemberMoneySimulator(INCREASE_API_ENDPOINT, amount, targetMembershipId);
+
+            amount = random.nextInt(20001) - 10000; // Random number between -100000 and 100000
+            Integer decreaseTargetMembershipId = readyMemberList.get(random.nextInt(readyMemberList.size()));
+            increaseMemberMoneySimulator(DECREASE_API_ENDPOINT, amount, decreaseTargetMembershipId);
+
+            try {
+                Thread.sleep(1000); // Wait for 1 second before making the next API call
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private static void increaseMemberMoneySimulator(String apiEndpoint, int amount, int targetMembershipId) {
         try {
             URL url = new URL(apiEndpoint);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -66,8 +66,7 @@ public class DummyMoneyDataSimulator {
         }
     }
 
-    private static void registerAccountSimulator(String apiEndpoint,
-                                                 int targetMembershipId) {
+    private static void registerAccountSimulator(String apiEndpoint, int targetMembershipId) {
         try {
             URL url = new URL(apiEndpoint);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -89,8 +88,7 @@ public class DummyMoneyDataSimulator {
         }
     }
 
-    private static void createMemberMoneySimulator(String apiEndpoint,
-                                                   int targetMembershipId) {
+    private static void createMemberMoneySimulator(String apiEndpoint, int targetMembershipId) {
         try {
             URL url = new URL(apiEndpoint);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -99,7 +97,7 @@ public class DummyMoneyDataSimulator {
             conn.setDoOutput(true);
 
             JSONObject jsonRequestBody = new JSONObject();
-            jsonRequestBody.put("membershipId", targetMembershipId);
+            jsonRequestBody.put("targetMembershipId", targetMembershipId);
 
             call(apiEndpoint, conn, jsonRequestBody);
         } catch (IOException e) {
@@ -107,9 +105,8 @@ public class DummyMoneyDataSimulator {
         }
     }
 
-    private static void call(String apiEndpoint,
-                             HttpURLConnection conn,
-                             JSONObject jsonRequestBody) throws IOException {
+    private static void call(String apiEndpoint, HttpURLConnection conn, JSONObject jsonRequestBody)
+            throws IOException {
         OutputStream outputStream = conn.getOutputStream();
         outputStream.write(jsonRequestBody.toString()
                                           .getBytes());

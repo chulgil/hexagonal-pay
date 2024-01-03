@@ -17,6 +17,7 @@ services:
       - MYSQL_ROOT_PASSWORD=rootpassword
       - MYSQL_USER=mysqluser
       - MYSQL_PASSWORD=mysqlpw
+      - MYSQL_ENGINE='InnoDB'
 
   zookeeper:
     image: 'confluentinc/cp-zookeeper:7.2.1'
@@ -47,9 +48,9 @@ services:
       - KAFKA_ADVERTISED_LISTENERS=LC://kafka:29092,LX://localhost:9092
       - KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=LC:PLAINTEXT,LX:PLAINTEXT
       - KAFKA_INTER_BROKER_LISTENER_NAME=LC
-#      - KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR=1
-#      - KAFKA_TRANSACTION_STATE_LOG_MIN_ISR=1
-#      - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1
+      - KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR=1
+      - KAFKA_TRANSACTION_STATE_LOG_MIN_ISR=1
+      - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1
     depends_on:
       - zookeeper
 
@@ -183,7 +184,7 @@ services:
 
 
   money-query-service:
-    image: hexagonal-pay-money-query-service:0.0.1-SNAPSHOT
+    image: hexagonal-pay-money-query-service:1.0.0
     networks:
       - hexagonal_network
     ports:
@@ -209,8 +210,8 @@ services:
       - SERVICE_BANKING_URL=http://banking-service:8080
       - AWS_DYNAMODB_REGION=ap-northeast-2
       - AWS_DYNAMODB_TABLE=MoneyIncreaseEventByRegion
-      - AWS_DYNAMODB_ACCESS_KEY="{$AWS_DYNAMODB_ACCESS_KEY}"
-      - AWS_DYNAMODB_SECRET_KEY="{$AWS_DYNAMODB_SECRET_KEY}"
+      - AWS_DYNAMODB_ACCESS_KEY="${AWS_DYNAMODB_ACCESS_KEY}"
+      - AWS_DYNAMODB_SECRET_KEY="${AWS_DYNAMODB_SECRET_KEY}"
 
 #  money-local-service:
 #    image: hexagonal-pay-money-local-service:0.0.1-SNAPSHOT
