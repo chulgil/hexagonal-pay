@@ -16,7 +16,7 @@ import java.util.Date;
 public class MoneyChangingRequestJpaEntity {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long moneyChangingRequestId;
 
     private String targetMembershipId;

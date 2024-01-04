@@ -11,9 +11,9 @@
         </processorPath>
         <module name="hexagonal-pay.logging-consumer.main" />
         <module name="hexagonal-pay.membership-service.main" />
+        <module name="me.chulgil.msa.banking.hexagonal-pay.banking-service.main" />
         <module name="hexagonal-pay.payment-service.main" />
         <module name="hexagonal-pay.utility.main" />
-        <module name="hexagonal-pay.banking-service.main" />
         <module name="hexagonal-pay.remittance-service.main" />
         <module name="hexagonal-pay.money-query-service.main" />
         <module name="hexagonal-pay.task-consumer.main" />

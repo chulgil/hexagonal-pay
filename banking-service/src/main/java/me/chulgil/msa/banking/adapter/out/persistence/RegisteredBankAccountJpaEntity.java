@@ -1,5 +1,6 @@
 package me.chulgil.msa.banking.adapter.out.persistence;
 
+import javax.persistence.GenerationType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,7 +18,7 @@ import javax.persistence.Table;
 @NoArgsConstructor
 public class RegisteredBankAccountJpaEntity {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long registeredBankAccountId;
 
     private String membershipId;

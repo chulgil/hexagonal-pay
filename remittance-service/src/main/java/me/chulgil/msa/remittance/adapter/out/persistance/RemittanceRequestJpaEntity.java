@@ -1,5 +1,6 @@
 package me.chulgil.msa.remittance.adapter.out.persistance;
 
+import javax.persistence.GenerationType;
 import lombok.*;
 
 import javax.persistence.Entity;
@@ -16,7 +17,7 @@ import javax.persistence.Table;
 public class RemittanceRequestJpaEntity {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long remittanceRequestId;
     private String fromMembershipId; // from membership
     private String toMembershipId; // to membership

@@ -1,5 +1,6 @@
 package me.chulgil.msa.banking.adapter.out.persistence;
 
+import javax.persistence.GenerationType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,7 +19,7 @@ import java.util.UUID;
 @NoArgsConstructor
 public class FirmbankingRequestJpaEntity {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long requestFirmbankingId;
 
     private String fromBankName;

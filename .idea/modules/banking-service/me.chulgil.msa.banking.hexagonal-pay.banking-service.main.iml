@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module version="4">
-  <component name="AdditionalModuleElements">
-    <content url="file://$MODULE_DIR$/../../../banking-service/src/main" dumb="true">
-      <sourceFolder url="file://$MODULE_DIR$/../../../banking-service/src/main/resources" type="java-resource" />
-    </content>
+  <component name="SonarLintModuleSettings">
+    <option name="uniqueId" value="32636e9a-d526-40ee-8359-75f6fd8b60fe" />
   </component>
 </module>
