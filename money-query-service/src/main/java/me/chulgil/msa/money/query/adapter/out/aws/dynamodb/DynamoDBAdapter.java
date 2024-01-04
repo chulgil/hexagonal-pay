@@ -64,7 +64,9 @@ public class DynamoDBAdapter implements GetMoneySumByRegionPort, InsertMoneyIncr
     public void insertMoneyIncreaseEventByAddress(String addressName, int moneyIncrease) {
         // 1. raw event insert
         // PK: 강남구#231228 SK: 5,000
-        String pk = addressName + "#" + new SimpleDateFormat("yyMMdd");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyMMdd");
+        String yyMMdd = dateFormat.format(new Date());
+        String pk = addressName + "#" + yyMMdd;
         String sk = String.valueOf(moneyIncrease);
         putItem(pk, sk, moneyIncrease);
 

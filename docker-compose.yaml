@@ -210,8 +210,8 @@ services:
       - SERVICE_BANKING_URL=http://banking-service:8080
       - AWS_DYNAMODB_REGION=ap-northeast-2
       - AWS_DYNAMODB_TABLE=MoneyIncreaseEventByRegion
-      - AWS_DYNAMODB_ACCESS_KEY="${AWS_DYNAMODB_ACCESS_KEY}"
-      - AWS_DYNAMODB_SECRET_KEY="${AWS_DYNAMODB_SECRET_KEY}"
+      - AWS_DYNAMODB_ACCESS_KEY=${AWS_DYNAMODB_ACCESS_KEY}
+      - AWS_DYNAMODB_SECRET_KEY=${AWS_DYNAMODB_SECRET_KEY}
 
 #  money-local-service:
 #    image: hexagonal-pay-money-local-service:0.0.1-SNAPSHOT

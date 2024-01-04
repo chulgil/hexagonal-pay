@@ -29,7 +29,8 @@ public class MembershipServiceAdapter implements GetMemberAddressInfoPort {
             String jsonResponse = httpClient.sendGetRequest(url)
                                             .body();
 
-            Membership membership = new ObjectMapper().readValue(jsonResponse, Membership.class);
+            ObjectMapper mapper = new ObjectMapper();
+            Membership membership = mapper.readValue(jsonResponse, Membership.class);
 
             return MemberAddressInfo.builder()
                     .membershipId(membership.getMembershipId())
