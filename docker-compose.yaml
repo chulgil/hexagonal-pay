@@ -83,7 +83,6 @@ services:
       - axonserver-events:/axonserver/events
       - axonserver-config:/axonserver/config:ro
 
-
   logging-consumer:
     image: hexagonal-pay-logging-consumer:1.0.0
     networks:
@@ -183,62 +182,12 @@ services:
       - TASK_RESULT_TOPIC=hexagonal.task.result.topic
 
 
-  money-query-service:
-    image: hexagonal-pay-money-query-service:1.0.0
-    networks:
-      - hexagonal_network
-    ports:
-      - "8084:8080"
-    depends_on:
-      - axon-server
-      - mysql
-    environment:
-      - AXON_AXONSERVER_SERVERS=axon-server:8124
-      - AXON_SERIALIZER_EVENTS=jackson
-      - AXON_SERIALIZER_MESSAGES=jackson
-      - AXON_SERIALIZER_GENERAL=xstream
-      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/hexagonal_pay?useSSL=false&allowPublicKeyRetrieval=true
-      - SPRING_DATASOURCE_USERNAME=mysqluser
-      - SPRING_DATASOURCE_PASSWORD=mysqlpw
-      - SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT=org.hibernate.dialect.MySQL5InnoDBDialect
-      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
-      - KAFKA_CLUSTERS_BOOTSTRAPSERVERS=kafka:29092
-      - LOGGING_TOPIC=hexagonal.logging.out.stdout
-      - TASK_TOPIC=hexagonal.task.topic
-      - TASK_RESULT_TOPIC=hexagonal.task.result.topic
-      - SERVICE_MEMBERSHIP_URL=http://membership-service:8080
-      - SERVICE_BANKING_URL=http://banking-service:8080
-      - AWS_DYNAMODB_REGION=ap-northeast-2
-      - AWS_DYNAMODB_TABLE=MoneyIncreaseEventByRegion
-      - AWS_DYNAMODB_ACCESS_KEY=${AWS_DYNAMODB_ACCESS_KEY}
-      - AWS_DYNAMODB_SECRET_KEY=${AWS_DYNAMODB_SECRET_KEY}
-
-#  money-local-service:
-#    image: hexagonal-pay-money-local-service:0.0.1-SNAPSHOT
-#    networks:
-#      - hexagonal_network
-#    ports:
-#      - "8084:8080"
-#    depends_on:
-#      - axon-server
-#      - mysql
-#    environment:
-#      - AXON_AXONSERVER_SERVERS=axon-server:8124
-#      - AXON_SERIALIZER_EVENTS=jackson
-#      - AXON_SERIALIZER_MESSAGES=jackson
-#      - AXON_SERIALIZER_GENERAL=xstream
-#      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/hexagonal_pay?useSSL=false&allowPublicKeyRetrieval=true
-#      - SPRING_DATASOURCE_USERNAME=mysqluser
-#      - SPRING_DATASOURCE_PASSWORD=mysqlpw
-#      - SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT=org.hibernate.dialect.MySQL5InnoDBDialect
-#      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
-
   remittance-service:
     image: hexagonal-pay-remittance-service:1.0.0
     networks:
       - hexagonal_network
     ports:
-      - "8085:8080"
+      - "8084:8080"
     depends_on:
       - axon-server
       - mysql
@@ -263,7 +212,7 @@ services:
     networks:
       - hexagonal_network
     ports:
-      - "8086:8080"
+      - "8085:8080"
     depends_on:
       - axon-server
       - mysql
@@ -283,25 +232,88 @@ services:
       - SERVICE_MONEY_URL=http://money-service:8080
       - SERVICE_BANKING_URL=http://banking-service:8080
 
-#  settlement-service:
-#    image: hexagonal-pay-settlement-service:0.0.1-SNAPSHOT
-#    networks:
-#      - hexagonal_network
-#    ports:
-#      - "8087:8080"
-#    depends_on:
-#      - axon-server
-#      - mysql
-#    environment:
-#      - AXON_AXONSERVER_SERVERS=axon-server:8124
-#      - AXON_SERIALIZER_EVENTS=jackson
-#      - AXON_SERIALIZER_MESSAGES=jackson
-#      - AXON_SERIALIZER_GENERAL=xstream
-#      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/hexagonal_pay?useSSL=false&allowPublicKeyRetrieval=true
-#      - SPRING_DATASOURCE_USERNAME=mysqluser
-#      - SPRING_DATASOURCE_PASSWORD=mysqlpw
-#      - SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT=org.hibernate.dialect.MySQL5InnoDBDialect
-#      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+  money-aggregation-service:
+    image: hexagonal-pay-money-aggregation-service:1.0.0
+    networks:
+      - hexagonal_network
+    ports:
+      - "8086:8080"
+    restart: always
+    depends_on:
+      - kafka
+      - mysql
+    environment:
+      - AXON_AXONSERVER_SERVERS=axon-server:8124
+      - AXON_SERIALIZER_EVENTS=jackson
+      - AXON_SERIALIZER_MESSAGES=jackson
+      - AXON_SERIALIZER_GENERAL=xstream
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/hexagonal_pay?useSSL=false&allowPublicKeyRetrieval=true
+      - SPRING_DATASOURCE_USERNAME=mysqluser
+      - SPRING_DATASOURCE_PASSWORD=mysqlpw
+      - SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT=org.hibernate.dialect.MySQL5InnoDBDialect
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - KAFKA_CLUSTERS_BOOTSTRAPSERVERS=kafka:29092
+      - LOGGING_TOPIC=hexagonal.logging.out.stdout
+      - SERVICE_MEMBERSHIP_URL=http://membership-service:8080
+      - SERVICE_BANKING_URL=http://banking-service:8080
+      - SERVICE_MONEY_URL=http://money-service:8080
+
+  money-query-service:
+    image: hexagonal-pay-money-query-service:1.0.0
+    networks:
+      - hexagonal_network
+    ports:
+      - "8087:8080"
+    depends_on:
+      - axon-server
+      - mysql
+    environment:
+      - AXON_AXONSERVER_SERVERS=axon-server:8124
+      - AXON_SERIALIZER_EVENTS=jackson
+      - AXON_SERIALIZER_MESSAGES=jackson
+      - AXON_SERIALIZER_GENERAL=xstream
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/hexagonal_pay?useSSL=false&allowPublicKeyRetrieval=true
+      - SPRING_DATASOURCE_USERNAME=mysqluser
+      - SPRING_DATASOURCE_PASSWORD=mysqlpw
+      - SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT=org.hibernate.dialect.MySQL5InnoDBDialect
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - KAFKA_CLUSTERS_BOOTSTRAPSERVERS=kafka:29092
+      - LOGGING_TOPIC=hexagonal.logging.out.stdout
+      - TASK_TOPIC=hexagonal.task.topic
+      - TASK_RESULT_TOPIC=hexagonal.task.result.topic
+      - SERVICE_MEMBERSHIP_URL=http://membership-service:8080
+      - SERVICE_BANKING_URL=http://banking-service:8080
+      - AWS_DYNAMODB_REGION=ap-northeast-2
+      - AWS_DYNAMODB_TABLE=MoneyIncreaseEventByRegion
+      - AWS_DYNAMODB_ACCESS_KEY=${AWS_DYNAMODB_ACCESS_KEY}
+      - AWS_DYNAMODB_SECRET_KEY=${AWS_DYNAMODB_SECRET_KEY}
+
+  settlement-service:
+    image: hexagonal-pay-settlement-service:1.0.0
+    networks:
+      - hexagonal_network
+    ports:
+      - "8088:8080"
+    restart: always
+    depends_on:
+      - axon-server
+      - mysql
+    environment:
+      - AXON_AXONSERVER_SERVERS=axon-server:8124
+      - AXON_SERIALIZER_EVENTS=jackson
+      - AXON_SERIALIZER_MESSAGES=jackson
+      - AXON_SERIALIZER_GENERAL=xstream
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/hexagonal_pay?useSSL=false&allowPublicKeyRetrieval=true
+      - SPRING_DATASOURCE_USERNAME=mysqluser
+      - SPRING_DATASOURCE_PASSWORD=mysqlpw
+      - SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT=org.hibernate.dialect.MySQL5InnoDBDialect
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - KAFKA_CLUSTERS_BOOTSTRAPSERVERS=kafka:29092
+      - LOGGING_TOPIC=hexagonal.logging.out.stdout
+      - SERVICE_MEMBERSHIP_URL=http://membership-service:8080
+      - SERVICE_BANKING_URL=http://banking-service:8080
+      - SERVICE_MONEY_URL=http://money-service:8080
+      - SERVICE_PAYMENT_URL=http://payment-service:8080
 
 volumes:
   axonserver-data:

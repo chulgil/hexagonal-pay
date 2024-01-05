@@ -82,7 +82,7 @@ public class DummyDataGenerator {
                 int price = (random.nextInt(9) + 1) * 1000; // 1000 ~ 9000
                 String franchiseId = "" + (random.nextInt(10) + 1L);
                 String franchiseFeeRate = String.format("%.2f", random.nextDouble() * 5.0);
-                int paymentStatus = 0;
+                int paymentStatus = random.nextInt(2);
                 Date approvedAt = new Date(System.currentTimeMillis() - random.nextInt(10000000));
 
                 preparedStatement.setLong(1, paymentId);
