@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import me.chulgil.msa.money.query.adapter.axon.QueryMoneySumByAddress;
+import me.chulgil.msa.money.query.application.port.out.GetMoneySumByAddressPort;
 import me.chulgil.msa.money.query.application.port.out.GetMoneySumByRegionPort;
 import me.chulgil.msa.money.query.application.port.out.InsertMoneyIncreaseEventByAddress;
 import me.chulgil.msa.money.query.domain.MoneySumByRegion;
@@ -33,7 +34,8 @@ import software.amazon.awssdk.services.dynamodb.model.UpdateItemRequest;
 import software.amazon.awssdk.services.dynamodb.model.UpdateItemResponse;
 
 @Component
-public class DynamoDBAdapter implements GetMoneySumByRegionPort, InsertMoneyIncreaseEventByAddress {
+public class DynamoDBAdapter implements GetMoneySumByAddressPort, GetMoneySumByRegionPort,
+        InsertMoneyIncreaseEventByAddress {
 
     private final String tableName;
 
@@ -98,16 +100,6 @@ public class DynamoDBAdapter implements GetMoneySumByRegionPort, InsertMoneyIncr
         }
     }
 
-
-    @QueryHandler
-    public MoneySumByRegion query(QueryMoneySumByAddress query) {
-        return MoneySumByRegion.generateMoneySumByRegion(new MoneySumByRegionId(UUID.randomUUID()
-                                                                                    .toString()),
-                                                         new MoneySumByRegion.RegionName(query.getAddress()),
-                                                         new MoneySumByRegion.MoneySum(1000));
-    }
-
-
     private void putItem(String pk, String sk, int balance) {
         try {
             String balanceStr = String.valueOf(balance);
@@ -161,6 +153,30 @@ public class DynamoDBAdapter implements GetMoneySumByRegionPort, InsertMoneyIncr
         return null;
     }
 
+    private void queryItem(String id) {
+        try {
+            // PK 만 써도 돼요.
+            HashMap<String, Condition> attrMap = new HashMap<>();
+            attrMap.put("PK", Condition.builder()
+                    .attributeValueList(AttributeValue.builder()
+                                                .s(id)
+                                                .build())
+                    .comparisonOperator(ComparisonOperator.EQ)
+                    .build());
+
+            QueryRequest request = QueryRequest.builder()
+                    .tableName(this.tableName)
+                    .keyConditions(attrMap)
+                    .build();
+
+            QueryResponse response = dynamoDbClient.query(request);
+            response.items()
+                    .forEach((value) -> System.out.println(value));
+        } catch (DynamoDbException e) {
+            System.err.println("Error getting an item from the table: " + e.getMessage());
+        }
+    }
+
     private void updateItem(String pk, String sk, int balance) {
         try {
             HashMap<String, AttributeValue> attrMap = new HashMap<>();
@@ -205,27 +221,18 @@ public class DynamoDBAdapter implements GetMoneySumByRegionPort, InsertMoneyIncr
     }
 
 
-    private void queryItem(String id) {
-        try {
-            // PK 만 써도 돼요.
-            HashMap<String, Condition> attrMap = new HashMap<>();
-            attrMap.put("PK", Condition.builder()
-                    .attributeValueList(AttributeValue.builder()
-                                                .s(id)
-                                                .build())
-                    .comparisonOperator(ComparisonOperator.EQ)
-                    .build());
+    @Override
+    public int getMoneySumByAddress(String addressName) {
+        String pk = addressName;
+        String sk = "-1";
+        return getItem(pk, sk).getBalance();
+    }
 
-            QueryRequest request = QueryRequest.builder()
-                    .tableName(this.tableName)
-                    .keyConditions(attrMap)
-                    .build();
-
-            QueryResponse response = dynamoDbClient.query(request);
-            response.items()
-                    .forEach((value) -> System.out.println(value));
-        } catch (DynamoDbException e) {
-            System.err.println("Error getting an item from the table: " + e.getMessage());
-        }
+    @QueryHandler
+    public MoneySumByRegion query(QueryMoneySumByAddress query) {
+        return MoneySumByRegion.generateMoneySumByRegion(new MoneySumByRegionId(UUID.randomUUID()
+                                                                                    .toString()),
+                                                         new MoneySumByRegion.RegionName(query.getAddress()),
+                                                         new MoneySumByRegion.MoneySum(getMoneySumByAddress(query.getAddress())));
     }
 }
