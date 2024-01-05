@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "payment_request")
@@ -25,6 +26,7 @@ public class PaymentJpaEntity {
     private int requestPrice;
     private String franchiseId;
     private String franchiseFeeRate;
+    @Setter
     private int paymentStatus;  // 0: 승인, 1: 실패, 2: 정산 완료.
     private Date approvedAt;
 

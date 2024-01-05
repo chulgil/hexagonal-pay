@@ -1,8 +1,10 @@
 package me.chulgil.msa.payment.application.service;
 
+import java.util.List;
 import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import me.chulgil.msa.common.UseCase;
+import me.chulgil.msa.payment.application.port.in.FinishSettlementCommand;
 import me.chulgil.msa.payment.application.port.in.RequestPaymentCommand;
 import me.chulgil.msa.payment.application.port.in.RequestPaymentUseCase;
 import me.chulgil.msa.payment.application.port.out.CreatePaymentPort;
@@ -35,5 +37,15 @@ public class PaymentService implements RequestPaymentUseCase {
         // createPaymentPort
         return createPaymentPort.createPayment(command.getRequestMembershipId(), command.getRequestPrice(),
                                                command.getFranchiseId(), command.getFranchiseFeeRate());
+    }
+
+    @Override
+    public List<Payment> getNormalStatusPayments() {
+        return createPaymentPort.getNormalStatusPayments();
+    }
+
+    @Override
+    public void finishPayment(FinishSettlementCommand command) {
+        createPaymentPort.changePaymentRequestStatus(command.getPaymentId(), 2);
     }
 }
