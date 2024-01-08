@@ -6,8 +6,6 @@ import lombok.EqualsAndHashCode;
 import me.chulgil.msa.common.SelfValidating;
 import org.jetbrains.annotations.NotNull;
 
-import javax.validation.constraints.NotBlank;
-
 @Data
 @EqualsAndHashCode(callSuper = false)
 public class RequestRemittanceCommand extends SelfValidating<RequestRemittanceCommand> {
@@ -23,20 +21,17 @@ public class RequestRemittanceCommand extends SelfValidating<RequestRemittanceCo
 
     private int remittanceType; // 0: membership(내부 고객), 1: bank (외부 은행 계좌)
 
-
     // 송금요청 금액
-    @NotNull
-    @NotBlank
     private int amount;
 
 
     @Builder
-    public RequestRemittanceCommand(String fromMembershipId,
+    public RequestRemittanceCommand(@NotNull String fromMembershipId,
                                     String toMembershipId,
                                     String toBankName,
                                     String toBankAccountNumber,
                                     int remittanceType,
-                                    int amount) {
+                                    @NotNull Integer amount) {
         this.fromMembershipId = fromMembershipId;
         this.toMembershipId = toMembershipId;
         this.toBankName = toBankName;
