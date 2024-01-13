@@ -12,4 +12,5 @@ include 'utility'
 include 'money-query-service'
 include 'money-aggregation-service'
 include 'settlement-service'
+include 'batch-service'
 
