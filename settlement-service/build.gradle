@@ -1,5 +1,5 @@
 plugins {
-    id 'com.palantir.docker' version '0.25.0'
+    id 'com.palantir.docker' version '0.35.0'
 }
 ext{
     axonVersion = "4.8.0"
@@ -19,7 +19,7 @@ dependencies {
 
     testImplementation 'junit:junit:4.13.1'
     runtimeOnly 'com.h2database:h2'
-    runtimeOnly 'mysql:mysql-connector-java'
+    runtimeOnly 'com.mysql:mysql-connector-j'
 
     implementation 'org.springframework.boot:spring-boot-starter-batch'
     implementation 'org.springframework.boot:spring-boot-starter-quartz'

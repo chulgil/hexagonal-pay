@@ -19,6 +19,7 @@ services:
       - MYSQL_PASSWORD=mysqlpw
       - MYSQL_ENGINE='InnoDB'
 
+
   zookeeper:
     image: 'confluentinc/cp-zookeeper:7.2.1'
     networks:
@@ -314,6 +315,35 @@ services:
       - SERVICE_BANKING_URL=http://banking-service:8080
       - SERVICE_MONEY_URL=http://money-service:8080
       - SERVICE_PAYMENT_URL=http://payment-service:8080
+
+  batch-service:
+    image: hexagonal-pay-batch-service:1.0.0
+    networks:
+      - hexagonal_network
+    ports:
+      - "8089:8080"
+    restart: always
+    depends_on:
+      - axon-server
+      - mysql
+    environment:
+      - AXON_AXONSERVER_SERVERS=axon-server:8124
+      - AXON_SERIALIZER_EVENTS=jackson
+      - AXON_SERIALIZER_MESSAGES=jackson
+      - AXON_SERIALIZER_GENERAL=xstream
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/hexagonal_pay?useSSL=false&allowPublicKeyRetrieval=true
+      - SPRING_DATASOURCE_USERNAME=mysqluser
+      - SPRING_DATASOURCE_PASSWORD=mysqlpw
+      - SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT=org.hibernate.dialect.MySQL5InnoDBDialect
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - KAFKA_CLUSTERS_BOOTSTRAPSERVERS=kafka:29092
+      - LOGGING_TOPIC=hexagonal.logging.out.stdout
+      - SERVICE_MEMBERSHIP_URL=http://membership-service:8080
+      - SERVICE_BANKING_URL=http://banking-service:8080
+      - SERVICE_MONEY_URL=http://money-service:8080
+      - SERVICE_PAYMENT_URL=http://payment-service:8080
+
+
 
 volumes:
   axonserver-data:

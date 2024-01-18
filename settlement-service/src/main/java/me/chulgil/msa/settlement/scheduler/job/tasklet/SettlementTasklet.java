@@ -21,7 +21,6 @@ public class SettlementTasklet implements Tasklet {
     private final GetRegisteredBankAccountPort getRegisteredBankAccountPort;
     private final PaymentPort paymentPort;
 
-
     @Override
     public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
 
@@ -43,8 +42,6 @@ public class SettlementTasklet implements Tasklet {
                     .bankAccountNumber(entity.getBankAccountNumber())
                     .build());
         }
-
-
 
         // 3. 각 franchiseId 별로, 정산 금액을 계산해주고
         // 수수료를 제하지 않았어요.

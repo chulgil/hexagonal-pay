@@ -1,4 +1,4 @@
-package me.chulgil.msa.batch.adapter.in.scheduler.tasklet;
+package me.chulgil.msa.batch.adapter.in.batch.tasklet;
 
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.scope.context.ChunkContext;

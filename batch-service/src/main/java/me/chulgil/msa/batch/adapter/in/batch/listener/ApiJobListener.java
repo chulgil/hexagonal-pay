@@ -1,4 +1,4 @@
-package me.chulgil.msa.batch.adapter.in.scheduler.listener;
+package me.chulgil.msa.batch.adapter.in.batch.listener;
 
 import org.springframework.batch.core.JobExecution;
 
