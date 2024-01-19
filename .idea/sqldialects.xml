@@ -4,4 +4,7 @@
     <file url="file://$PROJECT_DIR$/db/initdb.d/create_table.sql" dialect="MySQL" />
     <file url="file://$PROJECT_DIR$/db/initdb.d/load_data.sql" dialect="GenericSQL" />
   </component>
+  <component name="SqlResolveMappings">
+    <file url="file://$PROJECT_DIR$/batch-service/src/main/java/me/chulgil/msa/batch/adapter/out/persistence/ProductPersistenceAdaptor.java" scope="{&quot;node&quot;:{  &quot;@negative&quot;:&quot;1&quot;,  &quot;group&quot;:{   &quot;@kind&quot;:&quot;root&quot;,   &quot;node&quot;:{    &quot;@negative&quot;:&quot;1&quot;   }  } }}" />
+  </component>
 </project>

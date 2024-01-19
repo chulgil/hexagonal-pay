@@ -2,35 +2,35 @@ package me.chulgil.msa.batch.scheduler.mapper;
 
 import javax.annotation.processing.Generated;
 import me.chulgil.msa.batch.adapter.out.persistence.ProductJpaEntity;
-import me.chulgil.msa.batch.scheduler.port.out.ProductVO;
+import me.chulgil.msa.batch.scheduler.port.out.ProductInfo;
 import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-01-16T17:46:56+0900",
+    date = "2024-01-19T15:03:19+0900",
     comments = "version: 1.5.3.Final, compiler: javac, environment: Java 11.0.21 (Amazon.com Inc.)"
 )
 @Component
 public class ProductMapperImpl implements ProductMapper {
 
     @Override
-    public ProductVO to(ProductJpaEntity arg0) {
+    public ProductInfo to(ProductJpaEntity arg0) {
         if ( arg0 == null ) {
             return null;
         }
 
-        ProductVO.ProductVOBuilder productVO = ProductVO.builder();
+        ProductInfo.ProductInfoBuilder productInfo = ProductInfo.builder();
 
-        productVO.id( arg0.getId() );
-        productVO.name( arg0.getName() );
-        productVO.price( arg0.getPrice() );
-        productVO.type( arg0.getType() );
+        productInfo.id( arg0.getId() );
+        productInfo.name( arg0.getName() );
+        productInfo.price( arg0.getPrice() );
+        productInfo.type( arg0.getType() );
 
-        return productVO.build();
+        return productInfo.build();
     }
 
     @Override
-    public ProductJpaEntity from(ProductVO arg0) {
+    public ProductJpaEntity from(ProductInfo arg0) {
         if ( arg0 == null ) {
             return null;
         }

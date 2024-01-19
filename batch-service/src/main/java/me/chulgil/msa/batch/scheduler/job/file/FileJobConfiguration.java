@@ -4,7 +4,7 @@ import javax.persistence.EntityManagerFactory;
 import lombok.RequiredArgsConstructor;
 import me.chulgil.msa.batch.adapter.in.batch.chunk.processor.FileItemProcessor;
 import me.chulgil.msa.batch.adapter.out.persistence.ProductJpaEntity;
-import me.chulgil.msa.batch.scheduler.port.out.ProductVO;
+import me.chulgil.msa.batch.scheduler.port.out.ProductInfo;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
@@ -39,7 +39,7 @@ public class FileJobConfiguration {
     @Bean
     public Step fileStep() {
         return stepBuilderFactory.get("fileStep")
-                                 .<ProductVO, ProductJpaEntity>chunk(10)
+                                 .<ProductInfo, ProductJpaEntity>chunk(10)
                                  .reader(fileItemReader(null))
                                  .processor(fileItemProcessor())
                                  .writer(fileItemWriter())
@@ -49,12 +49,12 @@ public class FileJobConfiguration {
 
     @Bean
     @JobScope
-    public FlatFileItemReader<ProductVO> fileItemReader(@Value("#{jobParameters['requireDate']}") String requireDate) {
-        return new FlatFileItemReaderBuilder<ProductVO>()
+    public FlatFileItemReader<ProductInfo> fileItemReader(@Value("#{jobParameters['requireDate']}") String requireDate) {
+        return new FlatFileItemReaderBuilder<ProductInfo>()
                 .name("flatFile")
                 .resource(new ClassPathResource("product_" + requireDate + ".csv"))
                 .fieldSetMapper(new BeanWrapperFieldSetMapper<>())
-                .targetType(ProductVO.class)
+                .targetType(ProductInfo.class)
                 .linesToSkip(1)
                 .delimited()
                 .delimiter(",")
@@ -63,7 +63,7 @@ public class FileJobConfiguration {
     }
 
     @Bean
-    public ItemProcessor<ProductVO, ProductJpaEntity> fileItemProcessor() {
+    public ItemProcessor<ProductInfo, ProductJpaEntity> fileItemProcessor() {
         return new FileItemProcessor();
     }
 
